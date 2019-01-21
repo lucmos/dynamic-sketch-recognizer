@@ -57,7 +57,7 @@ def get_title(info):
     return "{} {} {} - {}".format(
         Utils.prettify_name(info[Utils.NAME]),
         Utils.prettify_name(info[Utils.SURNAME]),
-        info[Utils.WORD_NUMBER],
+        info[Utils.ITEM_INDEX],
         Utils.prettify_name(info[Utils.HANDWRITING]))
 
 
@@ -191,7 +191,7 @@ class GifCreator:
         self.title = get_title(self.info)
 
         self.gif_path = Utils.BUILD_GIFS_PATH(dataset_name, self.info[Utils.NAME], self.info[Utils.SURNAME],
-                                              self.info[Utils.WORD_NUMBER], self.info[Utils.HANDWRITING], label)
+                                              self.info[Utils.ITEM_INDEX], self.info[Utils.HANDWRITING], label)
         self._generate_animation()
 
     @staticmethod
@@ -259,7 +259,7 @@ class ChartCreator:
     def plot2dataframe(self, xaxes=Utils.X, yaxes=Utils.Y):
         set_white_chart()
         path = Utils.BUILD_CHART2D_PATH(self.dataset_name, self.info[Utils.NAME], self.info[Utils.SURNAME],
-                                        self.info[Utils.WORD_NUMBER], self.info[Utils.HANDWRITING], self.label)
+                                        self.info[Utils.ITEM_INDEX], self.info[Utils.HANDWRITING], self.label)
         chrono = chronometer.Chrono("Plotting 2D Chart for: {}...".format(self.title))
         if os.path.isfile(path):
             chrono.end("already exixst")
@@ -297,7 +297,7 @@ class ChartCreator:
         wrote_something = False
         for scaling in scaling_rates:
             path = Utils.BUILD_CHART3D_PATH(self.dataset_name, self.info[Utils.NAME], self.info[Utils.SURNAME],
-                                            self.info[Utils.WORD_NUMBER], self.info[Utils.HANDWRITING], scaling,
+                                            self.info[Utils.ITEM_INDEX], self.info[Utils.HANDWRITING], scaling,
                                             self.label)
             if os.path.isfile(path):
                 continue
@@ -337,7 +337,7 @@ class ChartCreator:
             # ChartCreator.set_axes_equal(ax)
 
             Utils.mkdir(Utils.BUILD_CHART3D_FOLDER_PATH(self.dataset_name, self.info[Utils.NAME], self.info[Utils.SURNAME],
-                                            self.info[Utils.WORD_NUMBER], self.info[Utils.HANDWRITING], self.label ))
+                                                        self.info[Utils.ITEM_INDEX], self.info[Utils.HANDWRITING], self.label))
             plt.savefig(path, dpi=400, bbox_inches='tight')
             plt.close(fig)
 

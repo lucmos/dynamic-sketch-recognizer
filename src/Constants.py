@@ -9,7 +9,7 @@ TOUCH_DOWN_POINTS = "touchDownPoints"
 TOUCH_UP_POINTS = "touchUpPoints"
 SAMPLED_POINTS = "sampledPoints"
 
-WORD_NUMBER = "wordNumber"
+ITEM_INDEX = "item_index"
 
 TIME = "time"
 COMPONENT = "component"
@@ -34,6 +34,16 @@ WIDTH_PIXELS = "widthPixels"
 XDPI = "xdpi"
 YDPI = "ydpi"
 
+
+CONFIGURATION = "configuration"
+GUIDE_LINES = "guide_lines"
+ITEMS = "items"
+REPETITIONS = "repetitions"
+REPETITIONS_LABEL = "repetitions_label"
+TITLE = "title"
+
+
+
 # Json structure
 
 JSON_FIELDS = [
@@ -42,7 +52,7 @@ JSON_FIELDS = [
     TOUCH_DOWN_POINTS,
     TOUCH_UP_POINTS,
     SAMPLED_POINTS,
-    WORD_NUMBER,
+    ITEM_INDEX,
     SESSION_DATA,
 ]
 

@@ -215,23 +215,30 @@ class DataManager:
 
     def _generate_example_charts(self):
         examples = [
-            {Utils.NAME:"Rita", Utils.SURNAME:"Battilocchi", Utils.WORD_NUMBER:5, Utils.HANDWRITING: Utils.ITALIC},
-            {Utils.NAME: "Alessio", Utils.SURNAME: "Mecca", Utils.WORD_NUMBER: 13, Utils.HANDWRITING: Utils.BLOCK_LETTER}
+            {Utils.NAME:"Rita", Utils.SURNAME:"Battilocchi", Utils.ITEM_INDEX:5, Utils.HANDWRITING: Utils.ITALIC},
+            {Utils.NAME: "Alessio", Utils.SURNAME: "Mecca", Utils.ITEM_INDEX: 13, Utils.HANDWRITING: Utils.BLOCK_LETTER}
 
         ]
         dataframes = self.get_dataframes()
         for ex in examples:
-            Plot.GifCreator(      Utils.DATASET_NAME_0, dataframes, dataframes[Utils.WORDID_USERID], dataframes[Utils.USERID_USERDATA], name=ex.get(Utils.NAME), surname=ex.get(Utils.SURNAME), word_number=ex.get(Utils.WORD_NUMBER), handwriting=ex.get(Utils.HANDWRITING))
-            p = Plot.ChartCreator(Utils.DATASET_NAME_0, dataframes, dataframes[Utils.WORDID_USERID], dataframes[Utils.USERID_USERDATA], name=ex.get(Utils.NAME), surname=ex.get(Utils.SURNAME), word_number=ex.get(Utils.WORD_NUMBER), handwriting=ex.get(Utils.HANDWRITING))
+            Plot.GifCreator(Utils.DATASET_NAME_0, dataframes, dataframes[Utils.WORDID_USERID], dataframes[Utils.USERID_USERDATA], name=ex.get(Utils.NAME), surname=ex.get(Utils.SURNAME), word_number=ex.get(Utils.ITEM_INDEX), handwriting=ex.get(Utils.HANDWRITING))
+            p = Plot.ChartCreator(Utils.DATASET_NAME_0, dataframes, dataframes[Utils.WORDID_USERID], dataframes[Utils.USERID_USERDATA], name=ex.get(Utils.NAME), surname=ex.get(Utils.SURNAME), word_number=ex.get(Utils.ITEM_INDEX), handwriting=ex.get(Utils.HANDWRITING))
             p.plot2dataframe()
             p.plot3dataframe()
-            Plot.ChartCreator(Utils.DATASET_NAME_0, dataframes, dataframes[Utils.WORDID_USERID], dataframes[Utils.USERID_USERDATA],  name=ex.get(Utils.NAME), surname=ex.get(Utils.SURNAME), word_number=ex.get(Utils.WORD_NUMBER), handwriting=ex.get(Utils.HANDWRITING), label=Utils.XY_SHIFTED_MOVEMENT_POINTS).plot2dataframe()
+            Plot.ChartCreator(Utils.DATASET_NAME_0, dataframes, dataframes[Utils.WORDID_USERID], dataframes[Utils.USERID_USERDATA], name=ex.get(Utils.NAME), surname=ex.get(Utils.SURNAME), word_number=ex.get(Utils.ITEM_INDEX), handwriting=ex.get(Utils.HANDWRITING), label=Utils.XY_SHIFTED_MOVEMENT_POINTS).plot2dataframe()
 
 
 
 if __name__ == "__main__":
-    d = DataManager(Utils.DATASET_NAME_0, update_data=False)
-
+    # d = DataManager(Utils.DATASET_NAME_0, update_data=False)
+    #
     # a = Utils.get_wordidfrom_wordnumber_name_surname(d[Utils.WORDID_USERID], d[Utils.USERID_USERDATA], "Rita", "Battilocchi" , Utils.BLOCK_LETTER, 31)
     # print(Utils.get_infos(d[Utils.WORDID_USERID], d[Utils.USERID_USERDATA], a))
-    d._generate_example_charts()
+    # d._generate_example_charts()
+
+    # import src.json_wrapper as jw
+    # j = "../res/TouchRecorder/aereo/luca_moschella_21.01.2019.10.51/aereo_Luca_Moschella_0.json"
+    # with open(j, 'r') as f:
+    #     s = jw.itemdata_from_dict(json.load(f))
+    #     s.sampled_points
+    #     print(s)

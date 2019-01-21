@@ -81,7 +81,7 @@ def get_infos(wordid_userid, user_data, wordid):
 
     # prendiamo il resto dei dati
     row = a.loc[wordid].to_dict()
-    row[WORD_NUMBER] = word_number
+    row[ITEM_INDEX] = word_number
     return row
 
 def get_wordidfrom_wordnumber_name_surname(wordid_userid, user_data, name, surname, handwriting, word_number):
