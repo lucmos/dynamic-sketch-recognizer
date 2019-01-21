@@ -1,7 +1,7 @@
 import unittest
 
-import src.DataManager as dm
-import src.Utils as Utils
+import src.data_manager as dm
+import src.utils as Utils
 
 TESTING_ON = Utils.DATASET_NAME_SMALL
 
@@ -18,7 +18,7 @@ class Tests(unittest.TestCase):
             counter = 0
             for word_id, json_data in self.idword_dataword_mapping.items():
                 for point in json_data[label]:
-                    self.assertTrue(dataframe.at[counter, Utils.WORD_ID] == word_id)
+                    self.assertTrue(dataframe.at[counter, Utils.ITEM_ID] == word_id)
                     for field in Utils.TIMED_POINTS:
                         self.assertTrue(point[field] == dataframe.at[counter, field])
                     counter += 1
@@ -31,7 +31,7 @@ class Tests(unittest.TestCase):
                 dataframe = self.dataframes[label]
                 for current_component, list_of_points in enumerate(json_data[label]):
                     for point in list_of_points:
-                        self.assertTrue(dataframe.at[counter, Utils.WORD_ID] == word_id)
+                        self.assertTrue(dataframe.at[counter, Utils.ITEM_ID] == word_id)
                         for field in Utils.POINTS:
                             if field == Utils.COMPONENT:
                                 self.assertTrue(current_component == dataframe.at[counter, field])
