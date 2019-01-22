@@ -1,7 +1,6 @@
 import re
 import pandas
 
-import src.chronometer as Chronometer
 from src.constants import *
 
 def atoi(text):
@@ -52,7 +51,7 @@ def dataframe_to_csv(dataframe, dataset_name, path):
 
 def save_dataframes(dataset_name, dataframes_dict, dataframe_type, message, to_csv, frames_to_add_column, csv_column):
     mkdir(BUILD_GENERATED_FOLDER(dataset_name))
-    chrono = Chronometer.Chrono(message)
+    chrono = chronometer.Chrono(message)
     for label, v in dataframes_dict.items():
         v.to_pickle(PATHS_FUN[dataframe_type][PICKLE_EXTENSION](dataset_name, label))
         if to_csv:
@@ -69,31 +68,35 @@ def mkdir(path):
     if not os.path.isdir(path):
         os.makedirs(path)
 
-def get_infos(wordid_userid, user_data, wordid):
-    # join con l'user id_data
-    a = pandas.DataFrame(wordid_userid).join(user_data, on=USER_ID)
+# def get_infos(wordid_userid, user_data, wordid):
+#     # join con l'user id_data
+#     a = pandas.DataFrame(wordid_userid).join(user_data, on=USER_ID)
+#
+#     # consideriamo l'user che ci interessa
+#     a = a[a[USER_ID] == wordid_userid[wordid]]
+#
+#     # contiamo quante parole ha già fatto
+#     word_number = len(a.loc[: wordid]) - 1
+#
+#     # prendiamo il resto dei dati
+#     row = a.loc[wordid].to_dict()
+#     row[ITEM_INDEX] = word_number
+#     return row
 
-    # consideriamo l'user che ci interessa
-    a = a[a[USER_ID] == wordid_userid[wordid]]
-
-    # contiamo quante parole ha già fatto
-    word_number = len(a.loc[: wordid]) - 1
-
-    # prendiamo il resto dei dati
-    row = a.loc[wordid].to_dict()
-    row[ITEM_INDEX] = word_number
-    return row
-
-def get_wordidfrom_wordnumber_name_surname(wordid_userid, user_data, name, surname, handwriting, word_number):
-    # join con l'user id_data
-    a = pandas.DataFrame(wordid_userid).join(user_data[[NAME, SURNAME, HANDWRITING]], on=USER_ID)
-
-    # consideriamo l'user e lo stile che ci interessa e prendiamo l'index corrispondente a word_number
-    b = (a.loc[(a[NAME] ==  name.lower()) & (a[SURNAME] == surname.lower()) & (a[HANDWRITING] == handwriting)])
-    assert not b.empty, "Controlla i parametri di ricerca, non è stata trovata nessuna entry"
-    return b.index[word_number]
+# def get_wordidfrom_wordnumber_name_surname(wordid_userid, user_data, name, surname, handwriting, word_number):
+#     # join con l'user id_data
+#     a = pandas.DataFrame(wordid_userid).join(user_data[[NAME, SURNAME, HANDWRITING]], on=USER_ID)
+#
+#     # consideriamo l'user e lo stile che ci interessa e prendiamo l'index corrispondente a word_number
+#     b = (a.loc[(a[NAME] ==  name.lower()) & (a[SURNAME] == surname.lower()) & (a[HANDWRITING] == handwriting)])
+#     assert not b.empty, "Controlla i parametri di ricerca, non è stata trovata nessuna entry"
+#     return b.index[word_number]
 
 
 def prettify_name(s):
     return " ".join(s.split("_")).title()
+
+
+def uglify(t):
+    return "".join(t.lower().split())
 

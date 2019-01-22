@@ -6,7 +6,7 @@ import src.utils as Utils
 import numpy as np
 
 import src.plotter as plotter
-import src.chronometer as cr
+import src.utility.chronometer as cr
 
 MOVEMENT_WEIGHT = lr.MOVEMENT_WEIGHT
 

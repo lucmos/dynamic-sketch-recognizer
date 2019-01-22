@@ -4,7 +4,6 @@ from collections import OrderedDict, Counter
 from datetime import datetime
 from statistics import mean
 
-import numpy as np
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVC
 
@@ -19,7 +18,7 @@ import operator
 import pandas
 import warnings
 import json
-import src.chronometer as Chronom
+import src.utility.chronometer as Chronom
 
 warnings.filterwarnings("ignore", category=sklearn.exceptions.UndefinedMetricWarning)
 

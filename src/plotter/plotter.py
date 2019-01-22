@@ -2,57 +2,11 @@ import itertools
 import numpy as np
 import os
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 from matplotlib.ticker import MaxNLocator
-from mpl_toolkits.mplot3d import axes3d
 
-import src.chronometer as chronometer
+import src.utility.chronometer as chronometer
 import src.utils as Utils
 import src.json_wrapper as jw
-
-
-import warnings
-import matplotlib.cbook
-
-warnings.filterwarnings("ignore", category=matplotlib.cbook.mplDeprecation)
-
-
-# plt.style.use('ggplot')
-
-Utils.os.putenv("MAGICK_MEMORY_LIMIT", "4294967296")
-
-IDENTIFICATION = "Identification"
-VERIFICATION = "Verification"
-
-import matplotlib as mpl
-
-
-def set_white_chart():
-    mpl.rcParams.update(mpl.rcParamsDefault)
-    plt.style.use('fivethirtyeight')
-
-    mpl.rcParams["figure.facecolor"] = 'white'
-    mpl.rcParams["axes.facecolor"] = 'white'
-    mpl.rcParams["axes.edgecolor"] = 'white'
-    mpl.rcParams["savefig.facecolor"] = 'white'
-
-    mpl.rcParams["xtick.color"] = 'white'
-    mpl.rcParams["ytick.color"] = 'white'
-
-
-def set_fivethirtyeight_style():
-    mpl.rcParams.update(mpl.rcParamsDefault)
-    plt.style.use('fivethirtyeight')
-
-    mpl.rcParams["figure.facecolor"] = 'white'
-    mpl.rcParams["axes.facecolor"] = 'white'
-    mpl.rcParams["axes.edgecolor"] = 'white'
-    mpl.rcParams["savefig.facecolor"] = 'white'
-
-
-def set_ggplot_style():
-    mpl.rcParams.update(mpl.rcParamsDefault)
-    plt.style.use('ggplot')
 
 
 def get_title(jsonobj: jw.ItemData):
@@ -63,13 +17,6 @@ def get_title(jsonobj: jw.ItemData):
         Utils.prettify_name(jsonobj.item))
 
 
-def get_word_data(dataframe, item_id):
-    # assert bool(item_id) != bool(
-    #     name and surname and handwriting and wordnumber), "Need a item_id xor a (name, surname, handwriting, word number"
-    # if not item_id:
-    #     item_id = Utils.get_wordidfrom_wordnumber_name_surname(wordid_userid, user_data, name, surname, handwriting,
-    #                                                           wordnumber)
-    return dataframe.loc[dataframe[Utils.ITEM_ID] == item_id]
 
 class Plotter:
     def __init__(self, dataset_name):
@@ -169,73 +116,7 @@ class Plotter:
                         yscale=False,
                         integer_x=True)
 
-class GifCreator:
 
-    def __init__(self, dataset_name, label, dataframe, json_obj: jw.ItemData , item_id, item, user_id, frames=120, after_delay=1000):
-        set_white_chart()
-        self.word_dataframe = get_word_data(dataframe, item_id)
-        print(self.word_dataframe)
-        self.frames = frames
-        self.max_time = max(self.word_dataframe[Utils.TIME])
-
-        self.repeat_delay = after_delay
-        self.height = json_obj.session_data.device_data.heigth_pixels
-        self.width = json_obj.session_data.device_data.width_pixels
-
-        self.colors_cycle = itertools.cycle(plt.rcParams['axes.prop_cycle'])
-        self.color_map = {}
-
-        Utils.mkdir(Utils.BUILD_GIFS_FOLDER_PATH(dataset_name))
-        self.title = get_title(json_obj)
-
-        self.gif_path = Utils.BUILD_GIFS_PATH(dataset_name, item, user_id, label)
-        print(self.gif_path)
-        self._generate_animation()
-
-    @staticmethod
-    def _update_plot(i, a, time_millis_per_frame):
-        data = a.word_dataframe[a.word_dataframe['time'] <= i * time_millis_per_frame]
-        for i, group in data.groupby(Utils.COMPONENT):
-            if i not in a.color_map:
-                a.color_map[i] = next(a.colors_cycle)['color']
-            color = a.color_map[i]
-            plt.scatter(group[Utils.X], group[Utils.Y], c=color, s=plt.rcParams['lines.markersize'] * 2)
-
-    def _generate_animation(self):
-        chrono = chronometer.Chrono("Generating gif for: {}...".format(self.title))
-        if os.path.isfile(self.gif_path):
-            chrono.millis("already exixst")
-            return
-
-        time_millis_per_frame = self.max_time / (self.frames - 1)
-
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-
-        ax.set_xlim(0, self.width)
-        ax.set_ylim(0, self.height)
-
-        ax.set_xticklabels([])
-        ax.set_yticklabels([])
-
-        ax.xaxis.label.set_visible(False)
-        ax.yaxis.label.set_visible(False)
-
-        # plt.title(self.title)
-        plt.axes().set_aspect('equal')
-        plt.axes().invert_yaxis()
-
-        ani = animation.FuncAnimation(fig, self._update_plot,
-                                      fargs=(self, time_millis_per_frame,),
-                                      frames=self.frames,
-                                      interval=time_millis_per_frame,
-                                      repeat=True,
-                                      repeat_delay=self.repeat_delay,
-                                      blit=False)
-
-        ani.save(self.gif_path, writer='imagemagick')
-        plt.close(fig)
-        chrono.millis()
 
 class ChartCreator:
 

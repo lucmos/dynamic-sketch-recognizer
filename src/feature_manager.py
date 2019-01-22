@@ -8,7 +8,7 @@ import pandas
 
 
 import src.data_manager as dm
-import src.chronometer as Chronom
+import src.utility.chronometer as Chronom
 import src.utils as Utils
 
 
