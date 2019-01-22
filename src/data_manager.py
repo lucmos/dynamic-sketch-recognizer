@@ -180,7 +180,7 @@ class DataManager:
         from src.plotter.gif_creator import TimeSeriesGif
 
         examples = [
-            "aereo_b_a_0.json",
+            "aereo_test_t_0.json",
             # "aereo_test_t_0.json"
         ]
         dataframe = self.tseries_movement_points

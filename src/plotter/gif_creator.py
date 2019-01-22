@@ -81,23 +81,23 @@ class TimeSeriesGif:
             return
 
         fig = plt.figure()
-        ax = fig.add_subplot(111)
+        self.ax = fig.add_subplot(111)
 
-        ax.set_xlim(0, self.width)
-        ax.set_ylim(0, self.height)
+        self.ax.set_xlim(0, self.width)
+        self.ax.set_ylim(0, self.height)
 
-        ax.set_xticklabels([])
-        ax.set_yticklabels([])
+        self.ax.set_xticklabels([])
+        self.ax.set_yticklabels([])
 
-        ax.xaxis.label.set_visible(False)
-        ax.yaxis.label.set_visible(False)
+        self.ax.xaxis.label.set_visible(False)
+        self.ax.yaxis.label.set_visible(False)
 
         # plt.tight_layout()
         if self.title:
             plt.title(self.title)
 
-        plt.axes().set_aspect('equal')
-        plt.axes().invert_yaxis()
+        self.ax.set_aspect('equal')
+        self.ax.invert_yaxis()
 
         # the number of frames in the gif is equal to the number of points
         frames = self.tseries.shape[0]

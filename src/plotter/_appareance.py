@@ -5,15 +5,10 @@ import matplotlib.cbook
 import matplotlib.pyplot as plt
 
 
-warnings.filterwarnings("ignore", category=matplotlib.cbook.mplDeprecation)
-
-
-# plt.style.use('ggplot')
+# warnings.filterwarnings("ignore", category=matplotlib.cbook.mplDeprecation)
 
 os.putenv("MAGICK_MEMORY_LIMIT", "4294967296")
 
-IDENTIFICATION = "Identification"
-VERIFICATION = "Verification"
 
 import matplotlib as mpl
 
