@@ -177,10 +177,10 @@ class DataManager:
 
     def _generate_example_charts(self):
 
-        from src.plotter.gif_creator import TimeSeriesGif
+        from src.plotter.gif_gen import TimeSeriesGif
 
         examples = [
-            "aereo_test_t_0.json",
+            "aereo_Rita_Battilocchi_0.json",
             # "aereo_test_t_0.json"
         ]
         dataframe = self.tseries_movement_points
