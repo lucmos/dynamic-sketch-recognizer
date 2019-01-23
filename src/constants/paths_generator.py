@@ -69,8 +69,8 @@ class FilePaths:
         return FilePaths.file(FolderPaths.chart2d_folder(datset_name), fname, PNG_EXTENSION)
 
     @staticmethod
-    def chart3d(datset_name, fname, timescaling):
-        return FilePaths.file(FolderPaths.chart3d_folder(datset_name, fname), fname + timescaling, PNG_EXTENSION)
+    def chart3d(datset_name, subfolder, fname):
+        return FilePaths.file(FolderPaths.chart3d_folder(datset_name, fname), fname, GIF_EXTENSION, subfolder=subfolder)
 
 
 # BUILD_DATAFRAME_PICKLE_PATH = lambda dataset_name, file: BUILD_FILE_PATH(BUILD_GENERATED_FOLDER(dataset_name), file,

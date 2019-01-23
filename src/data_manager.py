@@ -8,6 +8,7 @@ from src.constants.io_constants import BASE_FOLDER, JSON_EXTENSION
 
 from src.constants.paths_generator import FolderPaths, FilePaths
 from src.constants.literals import  *
+from src.plotter.gif_gen import TimeSeries3DGif_old, TimeSeries3DGif
 from src.utils import natural_keys
 
 FILE_BLACK_LIST = [CONFIGURATION_FILE]
@@ -177,11 +178,11 @@ class DataManager:
 
     def _generate_example_charts(self):
 
-        from src.plotter.gif_gen import TimeSeriesGif
+        from src.plotter.gif_gen import TimeSeries2DGif
 
         examples = [
-            "aereo_Rita_Battilocchi_0.json",
-            # "aereo_test_t_0.json"
+            # "aereo_Rita_Battilocchi_0.json",
+            "pesce_Flavia_ischiboni_40.json"
         ]
         dataframe = self.tseries_movement_points
         for ex in examples:
@@ -189,12 +190,15 @@ class DataManager:
             item_data: jw.ItemData = self.json_objs[item_id]
 
             tseries = DataManager.get_item_tseries(dataframe, item_id)
-            fname = FilePaths.gif(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
 
             h = item_data.session_data.device_data.heigth_pixels
             w = item_data.session_data.device_data.width_pixels
 
-            TimeSeriesGif(tseries, fname, height=h, width=w)
+            # fname = FilePaths.gif(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
+            # TimeSeries2DGif(tseries, fname, height=h, width=w)
+
+            fname = FilePaths.chart3d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
+            TimeSeries3DGif(tseries, fname, height=h, width=w)
             # p = Plot.ChartCreator(DATASET_NAME_0, dataframes, dataframes[WORDID_USERID], dataframes[USERID_USERDATA], name=ex.get(NAME), surname=ex.get(SURNAME), word_number=ex.get(ITEM_INDEX))
             # p.plot2dataframe()
             # p.plot3dataframe()

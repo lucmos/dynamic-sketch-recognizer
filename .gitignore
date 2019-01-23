@@ -155,4 +155,3 @@ ENV/
 # mypy
 .mypy_cache/
 .idea/encodings.xml
-res/TouchRecorder/

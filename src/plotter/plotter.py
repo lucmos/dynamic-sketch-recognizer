@@ -167,64 +167,64 @@ class ChartCreator:
         plt.savefig(path, dpi=400)
         chrono.millis()
 
-    def plot3dataframe(self, scaling_rates=None):
-        set_white_chart()
-        chrono = chronometer.Chrono("Plotting 3D Charts for: {}...".format(self.title))
-        maxv = max(self.word_dataframe[Utils.TIME])
-        if not scaling_rates:
-            scaling_rates = range(0, maxv + 1, 50)
-        wrote_something = False
-        for scaling in scaling_rates:
-            path = Utils.BUILD_CHART3D_PATH(self.dataset_name, self.info[Utils.NAME], self.info[Utils.SURNAME],
-                                            self.info[Utils.ITEM_INDEX], self.info[Utils.HANDWRITING], scaling,
-                                            self.label)
-            if os.path.isfile(path):
-                continue
-
-            wrote_something = True
-
-            fig = plt.figure()
-            ax = fig.add_subplot(111, projection='3d')
-
-            colors = itertools.cycle(plt.rcParams['axes.prop_cycle'])
-            for i, component in enumerate(g for _, g in self.word_dataframe.groupby(Utils.COMPONENT)):
-                x = component[Utils.X]
-                y = component[Utils.Y]
-                z = component[Utils.TIME] / maxv * scaling
-
-                ax.scatter(y, x, z, c=next(colors)['color'])
-
-            ax.w_xaxis.set_pane_color((1, 1, 1, 0))
-            ax.w_yaxis.set_pane_color((1, 1, 1, 0))
-            ax.w_zaxis.set_pane_color((1, 1, 1, 0))
-
-            ax.set_xticklabels([])
-            ax.set_yticklabels([])
-            ax.set_zticklabels([])
-
-
-            # ax.xaxis.set_ticks_position('none')  # tick markers
-            # ax.yaxis.set_ticks_position('none')
-
-
-            # plt.title(self.title)
-            ax.set_xlim(0, self.height)
-            ax.set_ylim(0, self.width)
-            ax.set_zlim(0, maxv)
-            ax.set_zlabel('\ntime', linespacing=-4)
-
-            # ChartCreator.set_axes_equal(ax)
-
-            Utils.mkdir(Utils.BUILD_CHART3D_FOLDER_PATH(self.dataset_name, self.info[Utils.NAME], self.info[Utils.SURNAME],
-                                                        self.info[Utils.ITEM_INDEX], self.info[Utils.HANDWRITING], self.label))
-            plt.savefig(path, dpi=400, bbox_inches='tight')
-            plt.close(fig)
-
-        if wrote_something:
-            chrono.millis()
-
-        else:
-            chrono.millis("already exixst")
+    # def plot3dataframe(self, scaling_rates=None):
+    #     set_white_chart()
+    #     chrono = chronometer.Chrono("Plotting 3D Charts for: {}...".format(self.title))
+    #     maxv = max(self.word_dataframe[Utils.TIME])
+    #     if not scaling_rates:
+    #         scaling_rates = range(0, maxv + 1, 50)
+    #     wrote_something = False
+    #     for scaling in scaling_rates:
+    #         path = Utils.BUILD_CHART3D_PATH(self.dataset_name, self.info[Utils.NAME], self.info[Utils.SURNAME],
+    #                                         self.info[Utils.ITEM_INDEX], self.info[Utils.HANDWRITING], scaling,
+    #                                         self.label)
+    #         if os.path.isfile(path):
+    #             continue
+    #
+    #         wrote_something = True
+    #
+    #         fig = plt.figure()
+    #         ax = fig.add_subplot(111, projection='3d')
+    #
+    #         colors = itertools.cycle(plt.rcParams['axes.prop_cycle'])
+    #         for i, component in enumerate(g for _, g in self.word_dataframe.groupby(Utils.COMPONENT)):
+    #             x = component[Utils.X]
+    #             y = component[Utils.Y]
+    #             z = component[Utils.TIME] / maxv * scaling
+    #
+    #             ax.scatter(y, x, z, c=next(colors)['color'])
+    #
+    #         ax.w_xaxis.set_pane_color((1, 1, 1, 0))
+    #         ax.w_yaxis.set_pane_color((1, 1, 1, 0))
+    #         ax.w_zaxis.set_pane_color((1, 1, 1, 0))
+    #
+    #         ax.set_xticklabels([])
+    #         ax.set_yticklabels([])
+    #         ax.set_zticklabels([])
+    #
+    #
+    #         # ax.xaxis.set_ticks_position('none')  # tick markers
+    #         # ax.yaxis.set_ticks_position('none')
+    #
+    #
+    #         # plt.title(self.title)
+    #         ax.set_xlim(0, self.height)
+    #         ax.set_ylim(0, self.width)
+    #         ax.set_zlim(0, maxv)
+    #         ax.set_zlabel('\ntime', linespacing=-4)
+    #
+    #         # ChartCreator.set_axes_equal(ax)
+    #
+    #         Utils.mkdir(Utils.BUILD_CHART3D_FOLDER_PATH(self.dataset_name, self.info[Utils.NAME], self.info[Utils.SURNAME],
+    #                                                     self.info[Utils.ITEM_INDEX], self.info[Utils.HANDWRITING], self.label))
+    #         plt.savefig(path, dpi=400, bbox_inches='tight')
+    #         plt.close(fig)
+    #
+    #     if wrote_something:
+    #         chrono.millis()
+    #
+    #     else:
+    #         chrono.millis("already exixst")
 
     @staticmethod
     def set_axes_equal(ax):
