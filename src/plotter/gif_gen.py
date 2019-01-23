@@ -109,44 +109,7 @@ class TimeSeries3DGif:
                                       blit=False)
         ani.save(self.filename, writer='imagemagick')
         plt.close(fig)
-        # plt.show()
         chrono.millis()
-
-        # fig = plt.figure()
-        # self.ax = fig.add_subplot(111)
-        #
-        # self.ax.set_xlim(0, self.width)
-        # self.ax.set_ylim(0, self.height)
-        #
-        # self.ax.set_xticklabels([])
-        # self.ax.set_yticklabels([])
-        #
-        # self.ax.xaxis.label.set_visible(False)
-        # self.ax.yaxis.label.set_visible(False)
-        #
-        # # plt.tight_layout()
-        # if self.title:
-        #     plt.title(self.title)
-        #
-        # self.ax.set_aspect('equal')
-        # self.ax.invert_yaxis()
-        #
-        # # the number of frames in the gif is equal to the number of points
-        # frames = self.tseries.shape[0]
-        #
-        # # get the end time
-        # end_time = max(self.tseries[self.time_column])
-        # delay_between_frames = end_time / (frames - 1)
-        #
-        # ani = animation.FuncAnimation(fig, self._update_plot,
-        #                               fargs=(self, delay_between_frames,),
-        #                               # workaround to repeat_delay not working
-        #                               frames=int(frames + (self.repeat_delay / delay_between_frames)),
-        #                               interval=delay_between_frames,
-        #                               repeat=True,
-        #                               repeat_delay=self.repeat_delay,
-        #                               blit=False)
-        #
 
 
 class TimeSeries2DGif:
