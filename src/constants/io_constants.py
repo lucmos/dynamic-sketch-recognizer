@@ -1,7 +1,7 @@
 # files constants
 
-ROOT_FOLDER = ".."
-BASE_FOLDER = "../res/"
+ROOT_FOLDER = "."
+BASE_FOLDER = "./res/"
 _RES_SUFFIX = "_res/"
 
 
