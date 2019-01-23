@@ -51,6 +51,10 @@ class TimeSeries3DGif:
     @staticmethod
     def _update_plot(scaling, a, maxv):
         colors_cycle = itertools.cycle(plt.rcParams['axes.prop_cycle'])
+        print( "Scaling: {}".format(scaling))
+        for artist in a.ax.lines + a.ax.collections:
+            artist.remove()
+
         if a.component_column:
             for i, component in enumerate(g for _, g in a.tseries.groupby(a.component_column)):
                 x = component[a.x_column]
