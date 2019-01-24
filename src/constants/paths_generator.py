@@ -1,9 +1,9 @@
 import os
 import time
 
-from .io_constants import BASE_FOLDER, ANIMATION_FOLDER_NAME, GIF2D_FOLDER_NAME, DECOMPOSITION_3D_FOLDER_NAME, \
+from .io_constants import RES_FOLDER, ANIMATION_FOLDER_NAME, GIF2D_FOLDER_NAME, DECOMPOSITION_3D_FOLDER_NAME, \
     GIF_EXTENSION, \
-    PNG_EXTENSION, GIF3D_FOLDER_NAME, PLOT2D_FOLDER_NAME, DATA_VISUALIZATION
+    PNG_EXTENSION, GIF3D_FOLDER_NAME, PLOT2D_FOLDER_NAME, DATA_VISUALIZATION, CACHE_FOLDER_NAME, CACHE_FEATURES
 from .io_constants import _RES_SUFFIX
 from .io_constants import ROOT_FOLDER
 from .io_constants import OUTPUT_FOLDER_NAME
@@ -13,29 +13,28 @@ from .io_constants import PICS_FOLDER_NAME
 from .io_constants import PICKLE_EXTENSION
 from .io_constants import DATAFRAME
 from .io_constants import CSV_EXTENSION
-from .io_constants import FEATURE
 
 
 class FolderPaths:
     @staticmethod
     def dataset_folder(dataset_name):
-        return os.path.join(BASE_FOLDER, dataset_name)
+        return os.path.join(RES_FOLDER, dataset_name)
 
     @staticmethod
-    def output_folder():
-        return os.path.join(ROOT_FOLDER, OUTPUT_FOLDER_NAME)
+    def output_folder(dataset_name):
+        return os.path.join(ROOT_FOLDER, OUTPUT_FOLDER_NAME, dataset_name)
 
     @staticmethod
-    def dataset_output_folder(dataset_name):
-        return os.path.join(FolderPaths.output_folder(), "output_" + dataset_name)
+    def cache_folder(dataset_name):
+        return os.path.join(ROOT_FOLDER, CACHE_FOLDER_NAME, dataset_name)
 
     @staticmethod
     def results_folder(dataset_name):
-        return os.path.join(FolderPaths.dataset_output_folder(dataset_name), time.strftime('%H-%M_%d-%m-%Y'))
+        return os.path.join(FolderPaths.output_folder(dataset_name), time.strftime('%H-%M_%d-%m-%Y'))
 
     @staticmethod
     def data_visualization_folder(dataset_name):
-        return os.path.join(FolderPaths.output_folder(), dataset_name, DATA_VISUALIZATION)
+        return os.path.join(FolderPaths.output_folder(dataset_name), DATA_VISUALIZATION)
 
     @staticmethod
     def pics_folder(dataset_name):
@@ -85,6 +84,17 @@ class FilePaths:
     def plot2d(datset_name, subfolder, fname):
         return FilePaths.file(FolderPaths.plot2d_folder(datset_name), fname, PNG_EXTENSION, subfolder=subfolder)
 
+
+class CachePaths:
+    @staticmethod
+    def cache_file(folder_path, subfolder, fname, extension):
+        if not subfolder:
+            return os.path.join(folder_path, fname + extension)
+        return os.path.join(folder_path, subfolder, fname + extension)
+
+    @staticmethod
+    def features(dataset_name, fname):
+        return CachePaths.cache_file(FolderPaths.cache_folder(dataset_name), CACHE_FEATURES, fname, PICKLE_EXTENSION)
 
 # BUILD_DATAFRAME_PICKLE_PATH = lambda dataset_name, file: BUILD_FILE_PATH(BUILD_GENERATED_FOLDER(dataset_name), file,
 #                                                                          DATAFRAME, PICKLE_EXTENSION)

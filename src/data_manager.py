@@ -4,10 +4,10 @@ import pandas as pd
 
 import src.utility.chronometer as Chronom
 import src.data.json_wrapper as jw
-from src.constants.io_constants import BASE_FOLDER, JSON_EXTENSION
+from src.constants.io_constants import RES_FOLDER, JSON_EXTENSION
 
 from src.constants.paths_generator import FolderPaths, FilePaths
-from src.constants.literals import  *
+from src.constants.literals import *
 from src.plotter import tseries_visualization
 from src.utility.utils import natural_keys
 
@@ -32,27 +32,27 @@ class DataManager:
                      TIME,
                      COMPONENT,
                      X,
-                     Y])
+                     Y]).astype(float)
 
         self.tseries_touch_up_points = pd.DataFrame(
             columns=[ITEM_ID,
                      TIME,
                      COMPONENT,
                      X,
-                     Y])
+                     Y]).astype(float)
 
         self.tseries_touch_down_points = pd.DataFrame(
             columns=[ITEM_ID,
                      TIME,
                      COMPONENT,
                      X,
-                     Y])
+                     Y]).astype(float)
 
         self.series_sampled_points = pd.DataFrame(
             columns=[ITEM_ID,
                      COMPONENT,
                      X,
-                     Y])
+                     Y]).astype(float)
 
         self._read_data()
         self._generate_example_charts()
@@ -64,7 +64,7 @@ class DataManager:
 
     def _read_data(self):
         assert os.path.isdir(FolderPaths.dataset_folder(self.dataset_name)), \
-            "Insert the dataset \"" + self.dataset_name + "\" in: " + BASE_FOLDER
+            "Insert the dataset \"" + self.dataset_name + "\" in: " + RES_FOLDER
 
         chrono = Chronom.Chrono("Reading json files...")
         observation_id = 0

@@ -1,79 +1,83 @@
 import warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
-import logging
-logging.basicConfig(level=logging.ERROR)
+
+from src.constants.paths_generator import CachePaths
+
+# warnings.simplefilter(action='ignore', category=FutureWarning)
+# import logging
+# logging.basicConfig(level=logging.ERROR)
 
 import tsfresh
 import pandas
+import numpy as np
 
 import src.data_manager as dm
+from src.constants.literals import *
 import src.utility.chronometer as Chronom
+from src.utility import utils
 
 
 class FeaturesManager:
 
-    @staticmethod
-    def _check_saved_pickles(dataset_name):
-        for label in utils.TIMED_POINTS_SERIES_TYPE:
-            if not utils.os.path.isfile(utils.BUILD_FEATURE_PICKLE_PATH(dataset_name, label)):
-                return False
-        return True
+    version = "1.0"
+
+    TSERIES_NAMES = [
+        MOVEMENT_POINTS,
+        TOUCH_DOWN_POINTS,
+        TOUCH_UP_POINTS]
+
+    _instance = None
 
     @staticmethod
-    def extract_features_from_dataframe(dataframe: pandas.DataFrame, wordid_userid_mapping):
-        return tsfresh.extract_relevant_features(dataframe, wordid_userid_mapping,
-                                                 column_id=utils.ITEM_ID, column_sort=utils.TIME, n_jobs=4)
+    def get_instance(dataset_name, renew_cache=False):
+        if FeaturesManager._instance:
+            return FeaturesManager._instance
 
-    def __init__(self, dataset_name, update_data=False, update_features=False):
-        update_features = update_features or update_data
+        c = Chronom.Chrono("Loading features...")
 
-        self.dataset_name = dataset_name
-        self.data_frames = {}
-        self.data_features = {}
+        if FeaturesManager.cache_present(dataset_name) and not renew_cache:
+            p = utils.load_pickle(CachePaths.features(dataset_name, FeaturesManager.version))
+            c.millis("from pickle")
+            return p
 
-        self._load_features(update_data, update_features)
+        _instance = FeaturesManager(dataset_name)
+        utils.save_pickle(_instance, CachePaths.features(dataset_name, FeaturesManager.version))
+        c.millis("generated")
+        return _instance
+
+    @staticmethod
+    def cache_present(dataset_name):
+        return os.path.isfile(CachePaths.features(dataset_name, FeaturesManager.version))
+
+    def __init__(self, dataset_name):
+        self.data = dm.DataManager(dataset_name)
+        self.labels = np.asarray((range(len(self.data.items))))
+
+        self.features = {x: None for x in FeaturesManager.TSERIES_NAMES}
+
+        self.extract_features()
+
+    @staticmethod
+    def _extract_features(tseries: pandas.DataFrame, labels):
+        return tsfresh.extract_relevant_features(tseries, labels,
+                                                 column_id=ITEM_ID, column_sort=TIME, n_jobs=4)
+
+    def extract_features(self):
+        local_features = {MOVEMENT_POINTS: self.data.tseries_movement_points,
+                          TOUCH_UP_POINTS: self.data.tseries_touch_up_points,
+                          TOUCH_DOWN_POINTS: self.data.tseries_touch_down_points}
+
+        for tseries_name in FeaturesManager.TSERIES_NAMES:
+            chrono = Chronom.Chrono("Extracting features from {}...".format(tseries_name))
+            self.features[tseries_name] = self._extract_features(local_features[tseries_name],
+                                                                 self.get_classes())
+            chrono.millis()
 
     def get_features(self):
-        return self.data_features
+        return self.features
 
     def get_classes(self):
-        return self.data_frames[utils.WORDID_USERID]
-
-    def get_classes_data(self):
-        return self.data_frames[utils.USERID_USERDATA]
-
-    def _load_features(self, update_data, update_features):
-        self.data_frames = dm.DataManager(self.dataset_name, update_data).get_dataframes()
-        if not update_features and FeaturesManager._check_saved_pickles(self.dataset_name):
-            self._read_pickles()
-            return
-        else:
-            self._extract_features_from_dataframes()
-            self._load_features(False, False)
-
-    def _read_pickles(self):
-        chrono = Chronom.Chrono("Reading features...")
-        for label in utils.TIMED_POINTS_SERIES_TYPE:
-            self.data_features[label] = pandas.read_pickle(utils.BUILD_FEATURE_PICKLE_PATH(self.dataset_name, label))
-        chrono.millis()
-
-    def _extract_features_from_dataframes(self):
-        for label in utils.TIMED_POINTS_SERIES_TYPE:
-            chrono = Chronom.Chrono("Extracting features from {}...".format(label), True)
-            local_features = {label: self.extract_features_from_dataframe(self.data_frames[label],
-                                                                          self.data_frames[utils.WORDID_USERID])}
-            chrono.millis()
-            self._save_feature(local_features)
-            del local_features
-
-    def _save_features(self, to_csv=True):
-        utils.save_dataframes(self.dataset_name, self.data_features, utils.FEATURE, "Saving features...",
-                              to_csv, utils.TIMED_POINTS_SERIES_TYPE, self.data_frames[utils.WORDID_USERID])
-
-    def _save_feature(self, dict_to_save, to_csv=True):
-        utils.save_dataframes(self.dataset_name, dict_to_save, utils.FEATURE, "Saving features...",
-                              to_csv, utils.TIMED_POINTS_SERIES_TYPE, self.data_frames[utils.WORDID_USERID])
+        return self.labels
 
 
 if __name__ == '__main__':
-    FeaturesManager(utils.DATASET_NAME_0, update_data=True, update_features=True)
+    FeaturesManager.get_instance(DATASET_NAME_0, renew_cache=True)

@@ -1,12 +1,17 @@
 # files constants
 
 ROOT_FOLDER = "."
-BASE_FOLDER = "./res/"
+RES_FOLDER = "./res/"
 _RES_SUFFIX = "_res/"
 
 
 GENERATED_FOLDER_NAME = "generated"
+
 OUTPUT_FOLDER_NAME = "outputs"
+
+CACHE_FOLDER_NAME = "cache"
+CACHE_FEATURES = "features"
+
 CSV_FOLDER_NAME = "csv"
 PICS_FOLDER_NAME = "pics"
 DATA_VISUALIZATION = "visualization"
@@ -23,5 +28,4 @@ GIF_EXTENSION = ".gif"
 PNG_EXTENSION = ".png"
 
 DATAFRAME = "dataframe"
-FEATURE = "features"
 
