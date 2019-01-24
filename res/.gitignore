@@ -1,5 +1,0 @@
-# Ignore everything in this directory
-/Biotouch_res
-
-# Except this file
-!.gitignore
