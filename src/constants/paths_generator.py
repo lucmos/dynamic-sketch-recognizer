@@ -1,8 +1,9 @@
 import os
 import time
 
-from .io_constants import BASE_FOLDER, ANIMATION_FOLDER_NAME, CHART2D_FOLDER_NAME, CHART3D_FOLDER_NAME, GIF_EXTENSION, \
-    PNG_EXTENSION
+from .io_constants import BASE_FOLDER, ANIMATION_FOLDER_NAME, GIF2D_FOLDER_NAME, DECOMPOSITION_3D_FOLDER_NAME, \
+    GIF_EXTENSION, \
+    PNG_EXTENSION, GIF3D_FOLDER_NAME, PLOT2D_FOLDER_NAME, DATA_VISUALIZATION
 from .io_constants import _RES_SUFFIX
 from .io_constants import ROOT_FOLDER
 from .io_constants import OUTPUT_FOLDER_NAME
@@ -33,24 +34,32 @@ class FolderPaths:
         return os.path.join(FolderPaths.dataset_output_folder(dataset_name), time.strftime('%H-%M_%d-%m-%Y'))
 
     @staticmethod
+    def data_visualization_folder(dataset_name):
+        return os.path.join(FolderPaths.output_folder(), dataset_name, DATA_VISUALIZATION)
+
+    @staticmethod
     def pics_folder(dataset_name):
-        return os.path.join(FolderPaths.output_folder(), PICS_FOLDER_NAME, dataset_name)
+        return os.path.join(FolderPaths.data_visualization_folder(dataset_name), PICS_FOLDER_NAME)
 
     @staticmethod
-    def gifs_folder(datset_name):
-        return os.path.join(FolderPaths.pics_folder(datset_name), ANIMATION_FOLDER_NAME)
+    def animation_folder(dataset_name):
+        return os.path.join(FolderPaths.data_visualization_folder(dataset_name), ANIMATION_FOLDER_NAME)
 
     @staticmethod
-    def chart2d_folder(datset_name):
-        return os.path.join(FolderPaths.pics_folder(datset_name), CHART2D_FOLDER_NAME)
+    def plot2d_folder(datset_name):
+        return os.path.join(FolderPaths.pics_folder(datset_name), PLOT2D_FOLDER_NAME)
 
     @staticmethod
-    def chart3d_folder(datset_name, subfolder):
-        return os.path.join(FolderPaths.pics_folder(datset_name), CHART3D_FOLDER_NAME, subfolder)
+    def gif2d_folder(datset_name):
+        return os.path.join(FolderPaths.animation_folder(datset_name), GIF2D_FOLDER_NAME)
 
+    @staticmethod
+    def decomposition3d_folder(datset_name):
+        return os.path.join(FolderPaths.animation_folder(datset_name), DECOMPOSITION_3D_FOLDER_NAME)
 
-# BUILD_GENERATED_FOLDER = lambda dataset_name: os.path.join(BUILD_RES_FOLDER(dataset_name), GENERATED_FOLDER)
-# BUILD_CSV_FOLDER = lambda dataset_name: os.path.join(BUILD_RES_FOLDER(dataset_name), CSV_FOLDER)
+    @staticmethod
+    def gif3d_folder(datset_name):
+        return os.path.join(FolderPaths.animation_folder(datset_name), GIF3D_FOLDER_NAME)
 
 
 class FilePaths:
@@ -62,15 +71,19 @@ class FilePaths:
 
     @staticmethod
     def gif(datset_name, subfolder, fname):
-        return FilePaths.file(FolderPaths.gifs_folder(datset_name), fname, GIF_EXTENSION, subfolder=subfolder)
+        return FilePaths.file(FolderPaths.gif2d_folder(datset_name), fname, GIF_EXTENSION, subfolder=subfolder)
 
     @staticmethod
-    def chart2d(datset_name, fname):
-        return FilePaths.file(FolderPaths.chart2d_folder(datset_name), fname, PNG_EXTENSION)
+    def gif3d(datset_name, subfolder, fname):
+        return FilePaths.file(FolderPaths.gif3d_folder(datset_name), fname, GIF_EXTENSION, subfolder=subfolder)
 
     @staticmethod
-    def chart3d(datset_name, subfolder, fname):
-        return FilePaths.file(FolderPaths.chart3d_folder(datset_name, fname), fname, GIF_EXTENSION, subfolder=subfolder)
+    def decomposition_gif3d(datset_name, subfolder, fname):
+        return FilePaths.file(FolderPaths.decomposition3d_folder(datset_name), fname, GIF_EXTENSION, subfolder=subfolder)
+
+    @staticmethod
+    def plot2d(datset_name, subfolder, fname):
+        return FilePaths.file(FolderPaths.plot2d_folder(datset_name), fname, PNG_EXTENSION, subfolder=subfolder)
 
 
 # BUILD_DATAFRAME_PICKLE_PATH = lambda dataset_name, file: BUILD_FILE_PATH(BUILD_GENERATED_FOLDER(dataset_name), file,

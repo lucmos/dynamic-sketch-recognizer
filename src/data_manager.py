@@ -8,7 +8,7 @@ from src.constants.io_constants import BASE_FOLDER, JSON_EXTENSION
 
 from src.constants.paths_generator import FolderPaths, FilePaths
 from src.constants.literals import  *
-from src.plotter.gif_gen import TimeSeries3DGif_old, TimeSeries3DGif
+from src.plotter import data_visualization
 from src.utils import natural_keys
 
 FILE_BLACK_LIST = [CONFIGURATION_FILE]
@@ -178,7 +178,7 @@ class DataManager:
 
     def _generate_example_charts(self):
 
-        from src.plotter.gif_gen import TimeSeries2DGif
+        from src.plotter.data_visualization import TimeSeries2DGIF
 
         examples = [
             # "aereo_Rita_Battilocchi_0.json",
@@ -194,11 +194,18 @@ class DataManager:
             h = item_data.session_data.device_data.heigth_pixels
             w = item_data.session_data.device_data.width_pixels
 
-            # fname = FilePaths.gif(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
-            # TimeSeries2DGif(tseries, fname, height=h, width=w)
+            fname = FilePaths.plot2d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
+            data_visualization.TimeSeries2D(tseries, fname, height=h, width=w)
 
-            fname = FilePaths.chart3d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
-            TimeSeries3DGif(tseries, fname, height=h, width=w)
+            fname = FilePaths.gif(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
+            data_visualization.TimeSeries2DGIF(tseries, fname, height=h, width=w)
+
+            fname = FilePaths.gif3d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
+            data_visualization.TimeSeries3DGIF(tseries, fname, height=h, width=w)
+
+            fname = FilePaths.decomposition_gif3d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
+            data_visualization.TimeSeriesDecomposition3DGIF(tseries, fname, height=h, width=w)
+
             # p = Plot.ChartCreator(DATASET_NAME_0, dataframes, dataframes[WORDID_USERID], dataframes[USERID_USERDATA], name=ex.get(NAME), surname=ex.get(SURNAME), word_number=ex.get(ITEM_INDEX))
             # p.plot2dataframe()
             # p.plot3dataframe()
