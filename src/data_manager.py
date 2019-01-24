@@ -181,8 +181,8 @@ class DataManager:
         from src.plotter.data_visualization import TimeSeries2DGIF
 
         examples = [
-            # "aereo_Rita_Battilocchi_0.json",
-            "pesce_Flavia_ischiboni_40.json"
+            "pesce_Flavia_ischiboni_40.json",
+            "candela_flavia_ischiboni_10.json"
         ]
         dataframe = self.tseries_movement_points
         for ex in examples:
@@ -205,12 +205,6 @@ class DataManager:
 
             fname = FilePaths.decomposition_gif3d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
             data_visualization.TimeSeriesDecomposition3DGIF(tseries, fname, height=h, width=w)
-
-            # p = Plot.ChartCreator(DATASET_NAME_0, dataframes, dataframes[WORDID_USERID], dataframes[USERID_USERDATA], name=ex.get(NAME), surname=ex.get(SURNAME), word_number=ex.get(ITEM_INDEX))
-            # p.plot2dataframe()
-            # p.plot3dataframe()
-            # Plot.ChartCreator(DATASET_NAME_0, dataframes, dataframes[WORDID_USERID], dataframes[USERID_USERDATA], name=ex.get(NAME), surname=ex.get(SURNAME), word_number=ex.get(ITEM_INDEX),
-            #                   label=XY_SHIFTED_MOVEMENT_POINTS).plot2dataframe()
 
 
 if __name__ == "__main__":
