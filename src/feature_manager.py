@@ -91,8 +91,16 @@ class FeaturesManager:
 if __name__ == '__main__':
     f = FeaturesManager.get_instance(DATASET_NAME_0, renew_cache=False)
     features = f.features[MOVEMENT_POINTS]
-    print(features.info(verbose=True))
 
+    # print(f.data.tseries_movement_points.head())
+    # print(len(set(f.data.tseries_movement_points[ITEM_ID])))
+    #
+    # print("Data: ", f.data.tseries_movement_points.shape)
+    # print("Features: ", features.shape)
+    # print("Labels: ", f.get_classes().shape)
+    #
+    # for x in f.data.files_name:
+    #     print(x)
     import sklearn.model_selection
     xtrain, xtest, y_train, y_test = sklearn.model_selection.train_test_split(features, f.get_classes(),
                                                                                   random_state=42,
@@ -100,20 +108,17 @@ if __name__ == '__main__':
 
     print(f.get_classes())
     print(len(f.get_classes()))
-    # TUNED_PARAMETERS = [{'kernel': ['rbf'], 'gamma': ['auto', 0, 1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6],
-    #                  'C': [0.001, 0.1, 1, 10, 100, 500, 1000, 5000, 10000]}]
-    # CV = 5
-    #
-    #
-    # predictor = make_pipeline(sklearn.preprocessing.RobustScaler(),
-    #                           GridSearchCV(SVC(), TUNED_PARAMETERS, cv=CV, n_jobs=-1))
-    # print("Fitting")
-    # predictor.fit(xtrain, y_train)
-    #
-    # print("Predictions")
-    # predictions = predictor.predict(xtest)
-    #
-    # print(sklearn.metrics.classification_report(y_test, predictions, labels=f.get_classes()))
+    TUNED_PARAMETERS = [{'kernel': ['rbf'], 'gamma': ['auto', 0, 1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6],
+                     'C': [0.001, 0.1, 1, 10, 100, 500, 1000, 5000, 10000]}]
+    CV = 5
 
+    predictor = make_pipeline(sklearn.preprocessing.RobustScaler(),
+                              GridSearchCV(SVC(), TUNED_PARAMETERS, cv=CV, n_jobs=-1))
+    print("Fitting")
+    predictor.fit(xtrain, y_train)
 
+    print("Predictions")
+    predictions = predictor.predict(xtest)
+
+    print(sklearn.metrics.classification_report(y_test, predictions))
 
