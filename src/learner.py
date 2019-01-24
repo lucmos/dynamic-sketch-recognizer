@@ -107,17 +107,6 @@ class WordClassifier:
         return probs
 
     @staticmethod
-    def filter_by_handwriting(dataframe, classes, user_data, handwriting):
-        d_temp = dataframe.join(classes).join(user_data[utils.HANDWRITING], on=utils.USER_ID).drop(utils.USER_ID,
-                                                                                                   axis=1)
-        dataframe_filt = d_temp[d_temp[utils.HANDWRITING] == handwriting].drop(utils.HANDWRITING, axis=1)
-
-        c_temp = pandas.DataFrame(classes).join(user_data[utils.HANDWRITING], on=utils.USER_ID)
-        classes_filt = c_temp[c_temp[utils.HANDWRITING] == handwriting].drop(utils.HANDWRITING, axis=1).squeeze()
-
-        return dataframe_filt, classes_filt
-
-    @staticmethod
     def scale_features(x_train, x_test):
         scaler = sklearn.preprocessing.StandardScaler()
         scaler.fit(x_train)

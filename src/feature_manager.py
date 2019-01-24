@@ -1,10 +1,14 @@
 import warnings
 
+from sklearn.model_selection import GridSearchCV
+from sklearn.pipeline import make_pipeline
+from sklearn.svm import SVC
+
 from src.constants.paths_generator import CachePaths
 
 # warnings.simplefilter(action='ignore', category=FutureWarning)
-# import logging
-# logging.basicConfig(level=logging.ERROR)
+import logging
+logging.basicConfig(level=logging.ERROR)
 
 import tsfresh
 import pandas
@@ -18,12 +22,14 @@ from src.utility import utils
 
 class FeaturesManager:
 
-    version = "1.0"
+    version = "1.1"
 
     TSERIES_NAMES = [
         MOVEMENT_POINTS,
         TOUCH_DOWN_POINTS,
         TOUCH_UP_POINTS]
+
+    # FDR_LEVEL = 0.15
 
     _instance = None
 
@@ -50,7 +56,7 @@ class FeaturesManager:
 
     def __init__(self, dataset_name):
         self.data = dm.DataManager(dataset_name)
-        self.labels = np.asarray((range(len(self.data.items))))
+        # self.labels = np.asarray((range(len(self.data.items))))
 
         self.features = {x: None for x in FeaturesManager.TSERIES_NAMES}
 
@@ -59,7 +65,10 @@ class FeaturesManager:
     @staticmethod
     def _extract_features(tseries: pandas.DataFrame, labels):
         return tsfresh.extract_relevant_features(tseries, labels,
-                                                 column_id=ITEM_ID, column_sort=TIME, n_jobs=4)
+                                                 column_id=ITEM_ID,
+                                                 column_sort=TIME,
+                                                 n_jobs=12,
+                                                 ml_task='classification')
 
     def extract_features(self):
         local_features = {MOVEMENT_POINTS: self.data.tseries_movement_points,
@@ -76,8 +85,35 @@ class FeaturesManager:
         return self.features
 
     def get_classes(self):
-        return self.labels
+        return np.asarray(self.data.items)
 
 
 if __name__ == '__main__':
-    FeaturesManager.get_instance(DATASET_NAME_0, renew_cache=True)
+    f = FeaturesManager.get_instance(DATASET_NAME_0, renew_cache=False)
+    features = f.features[MOVEMENT_POINTS]
+    print(features.info(verbose=True))
+
+    import sklearn.model_selection
+    xtrain, xtest, y_train, y_test = sklearn.model_selection.train_test_split(features, f.get_classes(),
+                                                                                  random_state=42,
+                                                                                  test_size=0.42)
+
+    print(f.get_classes())
+    print(len(f.get_classes()))
+    # TUNED_PARAMETERS = [{'kernel': ['rbf'], 'gamma': ['auto', 0, 1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6],
+    #                  'C': [0.001, 0.1, 1, 10, 100, 500, 1000, 5000, 10000]}]
+    # CV = 5
+    #
+    #
+    # predictor = make_pipeline(sklearn.preprocessing.RobustScaler(),
+    #                           GridSearchCV(SVC(), TUNED_PARAMETERS, cv=CV, n_jobs=-1))
+    # print("Fitting")
+    # predictor.fit(xtrain, y_train)
+    #
+    # print("Predictions")
+    # predictions = predictor.predict(xtest)
+    #
+    # print(sklearn.metrics.classification_report(y_test, predictions, labels=f.get_classes()))
+
+
+
