@@ -58,12 +58,6 @@ class DataManager:
         self._generate_example_charts()
         self.shift_offsets = {}
 
-        # print(self.tseries_touch_down_points)
-        # print(self.tseries_touch_up_points)
-        # print(self.tseries_movement_points)
-        # print(self.series_sampled_points)
-        # {word_id: (minX, minY) }
-
     def _read_data(self):
         assert os.path.isdir(FolderPaths.dataset_folder(self.dataset_name)), \
             "Insert the dataset \"" + self.dataset_name + "\" in: " + BASE_FOLDER
@@ -124,36 +118,15 @@ class DataManager:
                               for point in itemdata.sampled_points]),
                 ignore_index=True, sort=True)
 
-    # def _group_compute_offsets(self, group):
-    #     minX = group[X].min()
-    #     minY = group[Y].min()
-    #     self.shift_offsets[group[ITEM_ID].iloc[0]] = (minX, minY)
-    #
-    # def _group_shift_x(self, group):
-    #     m = self.shift_offsets[group[ITEM_ID].iloc[0]][0]
-    #     group[X] = group[X] - m
-    #     return group
-    #
-    # def _group_shift_y(self, group):
-    #     m = self.shift_offsets[group[ITEM_ID].iloc[0]][1]
-    #     group[Y] = group[Y] - m
-    #     return group
-    #
-    # def _group_shift_xy(self, group):
-    #     return self._group_shift_x(self._group_shift_y(group))
-    #
-    # def _shift(self):
-    #     chrono = Chronom.Chrono("Shifting dataframes...")
-    #     self.data_frames[MOVEMENT_POINTS].groupby(ITEM_ID).apply(self._group_compute_offsets)
-    #
-    #     f = {X: self._group_shift_x,
-    #          Y: self._group_shift_y,
-    #          XY: self._group_shift_xy}
-    #
-    #     for l in INITIAL_POINTS_SERIES_TYPE:
-    #         for dir in [X, Y, XY]:
-    #             self.data_frames[GET_SHIFTED_POINTS_NAME(dir, l)] = self.data_frames[l].groupby(ITEM_ID).apply(f[dir])
-    #     chrono.millis()
+    @staticmethod
+    def _normalize_group(group):
+        group[X] = group[X] - group[X].min()
+        group[Y] = group[Y] - group[Y].min()
+        return group
+
+    @staticmethod
+    def normalize_positions(tseries: pd.DataFrame):
+        return tseries.groupby(ITEM_ID).apply(DataManager._normalize_group)
 
     @staticmethod
     def get_userid(item_data: jw.ItemData):
@@ -177,15 +150,13 @@ class DataManager:
         return dataframe.loc[dataframe[ITEM_ID] == item_id]
 
     def _generate_example_charts(self):
-
-        from src.plotter.data_visualization import TimeSeries2DGIF
-
-        examples = [
+        examples_file_names = [
             "pesce_Flavia_ischiboni_40.json",
             "candela_flavia_ischiboni_10.json"
         ]
+
         dataframe = self.tseries_movement_points
-        for ex in examples:
+        for ex in examples_file_names:
             item_id = self.files_name.index(ex)
             item_data: jw.ItemData = self.json_objs[item_id]
 
@@ -194,22 +165,24 @@ class DataManager:
             h = item_data.session_data.device_data.heigth_pixels
             w = item_data.session_data.device_data.width_pixels
 
+            fname = FilePaths.plot2d(self.dataset_name, item_data.item, DataManager.get_userid(item_data) + "_normalized")
+            data_visualization.TimeSeries2D(DataManager.normalize_positions(tseries), fname, height=h, width=w)
+
             fname = FilePaths.plot2d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
             data_visualization.TimeSeries2D(tseries, fname, height=h, width=w)
 
-            fname = FilePaths.gif(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
-            data_visualization.TimeSeries2DGIF(tseries, fname, height=h, width=w)
-
-            fname = FilePaths.gif3d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
-            data_visualization.TimeSeries3DGIF(tseries, fname, height=h, width=w)
-
-            fname = FilePaths.decomposition_gif3d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
-            data_visualization.TimeSeriesDecomposition3DGIF(tseries, fname, height=h, width=w)
+            # fname = FilePaths.gif(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
+            # data_visualization.TimeSeries2DGIF(tseries, fname, height=h, width=w)
+            #
+            # fname = FilePaths.gif3d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
+            # data_visualization.TimeSeries3DGIF(tseries, fname, height=h, width=w)
+            #
+            # fname = FilePaths.decomposition_gif3d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
+            # data_visualization.TimeSeriesDecomposition3DGIF(tseries, fname, height=h, width=w)
 
 
 if __name__ == "__main__":
     d = DataManager(DATASET_NAME_0, update_data=False)
-
     # a = get_wordidfrom_wordnumber_name_surname(d[WORDID_USERID], d[USERID_USERDATA], "Rita", "Battilocchi" , BLOCK_LETTER, 31)
     # print(get_infos(d[WORDID_USERID], d[USERID_USERDATA], a))
     # d._generate_example_charts()
