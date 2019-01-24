@@ -1,7 +1,6 @@
 import sklearn.metrics
 
 import src.learner as lr
-import src.utils as Utils
 
 import numpy as np
 
@@ -136,10 +135,10 @@ TO_DO_TOGHETER = [(SVM_LIST_NOSHIFT, "setnoshift"),
 
 # todo: ottimizza evitando la ripetizione di calcoli
 if __name__ == '__main__':
-    p = plotter.Plotter(Utils.DATASET_NAME_0)
+    p = plotter.Plotter(utils.DATASET_NAME_0)
 
-    for handwriting in [Utils.ITALIC, Utils.BLOCK_LETTER]:
-        classifier = lr.WordClassifier(Utils.DATASET_NAME_0, handwriting)
+    for handwriting in [utils.ITALIC, utils.BLOCK_LETTER]:
+        classifier = lr.WordClassifier(utils.DATASET_NAME_0, handwriting)
 
         chrono = cr.Chrono("Generating verification outputs...")
         ver = VerificationEvaluator(classifier)

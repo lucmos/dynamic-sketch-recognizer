@@ -3,20 +3,20 @@ import json
 import pandas as pd
 
 import src.utility.chronometer as Chronom
-import src.json_wrapper as jw
+import src.data.json_wrapper as jw
 from src.constants.io_constants import BASE_FOLDER, JSON_EXTENSION
 
 from src.constants.paths_generator import FolderPaths, FilePaths
 from src.constants.literals import  *
-from src.plotter import data_visualization
-from src.utils import natural_keys
+from src.plotter import tseries_visualization
+from src.utility.utils import natural_keys
 
 FILE_BLACK_LIST = [CONFIGURATION_FILE]
 
 
 class DataManager:
 
-    def __init__(self, dataset_name, update_data=False):
+    def __init__(self, dataset_name):
         self.dataset_name = dataset_name
 
         # one per item
@@ -56,7 +56,11 @@ class DataManager:
 
         self._read_data()
         self._generate_example_charts()
-        self.shift_offsets = {}
+
+        self.tseries_movement_points = DataManager.normalize_positions(self.tseries_movement_points)
+        self.tseries_touch_down_points = DataManager.normalize_positions(self.tseries_touch_down_points)
+        self.tseries_touch_up_points = DataManager.normalize_positions(self.tseries_touch_up_points)
+        self.series_sampled_points = DataManager.normalize_positions(self.series_sampled_points)
 
     def _read_data(self):
         assert os.path.isdir(FolderPaths.dataset_folder(self.dataset_name)), \
@@ -166,23 +170,23 @@ class DataManager:
             w = item_data.session_data.device_data.width_pixels
 
             fname = FilePaths.plot2d(self.dataset_name, item_data.item, DataManager.get_userid(item_data) + "_normalized")
-            data_visualization.TimeSeries2D(DataManager.normalize_positions(tseries), fname, height=h, width=w)
+            tseries_visualization.TimeSeries2D(DataManager.normalize_positions(tseries), fname, height=h, width=w)
 
             fname = FilePaths.plot2d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
-            data_visualization.TimeSeries2D(tseries, fname, height=h, width=w)
+            tseries_visualization.TimeSeries2D(tseries, fname, height=h, width=w)
 
-            # fname = FilePaths.gif(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
-            # data_visualization.TimeSeries2DGIF(tseries, fname, height=h, width=w)
-            #
-            # fname = FilePaths.gif3d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
-            # data_visualization.TimeSeries3DGIF(tseries, fname, height=h, width=w)
-            #
-            # fname = FilePaths.decomposition_gif3d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
-            # data_visualization.TimeSeriesDecomposition3DGIF(tseries, fname, height=h, width=w)
+            fname = FilePaths.gif(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
+            tseries_visualization.TimeSeries2DGIF(tseries, fname, height=h, width=w)
+
+            fname = FilePaths.gif3d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
+            tseries_visualization.TimeSeries3DGIF(tseries, fname, height=h, width=w)
+
+            fname = FilePaths.decomposition_gif3d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
+            tseries_visualization.TimeSeriesDecomposition3DGIF(tseries, fname, height=h, width=w)
 
 
 if __name__ == "__main__":
-    d = DataManager(DATASET_NAME_0, update_data=False)
+    d = DataManager(DATASET_NAME_0)
     # a = get_wordidfrom_wordnumber_name_surname(d[WORDID_USERID], d[USERID_USERDATA], "Rita", "Battilocchi" , BLOCK_LETTER, 31)
     # print(get_infos(d[WORDID_USERID], d[USERID_USERDATA], a))
     # d._generate_example_charts()

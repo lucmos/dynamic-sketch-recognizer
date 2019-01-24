@@ -3,6 +3,7 @@ import pandas
 
 from src.constants import *
 
+# todo elimina o sistema
 def atoi(text):
     return int(text) if text.isdigit() else text
 

@@ -22,21 +22,20 @@ import src.utility.chronometer as Chronom
 
 warnings.filterwarnings("ignore", category=sklearn.exceptions.UndefinedMetricWarning)
 
-import src.utils as Utils
 import src.feature_manager as fm
 
-LEARNING_FROM = Utils.TIMED_POINTS_SERIES_TYPE
+LEARNING_FROM = utils.TIMED_POINTS_SERIES_TYPE
 
-MOVEMENT = Utils.MOVEMENT_POINTS
-UP = Utils.TOUCH_UP_POINTS
-DOWN = Utils.TOUCH_DOWN_POINTS
+MOVEMENT = utils.MOVEMENT_POINTS
+UP = utils.TOUCH_UP_POINTS
+DOWN = utils.TOUCH_DOWN_POINTS
 MAJORITY = "majority"
 AVERAGE = "average"
 WEIGHTED_AVERAGE = "weighted_average"
 
-XY_MOVEMENT = Utils.XY_SHIFTED_MOVEMENT_POINTS
-XY_UP = Utils.XY_SHIFTED_TOUCH_UP_POINTS
-XY_DOWN = Utils.XY_SHIFTED_TOUCH_DOWN_POINTS
+XY_MOVEMENT = utils.XY_SHIFTED_MOVEMENT_POINTS
+XY_UP = utils.XY_SHIFTED_TOUCH_UP_POINTS
+XY_DOWN = utils.XY_SHIFTED_TOUCH_DOWN_POINTS
 XY_MAJORITY = "xy_majority"
 XY_AVERAGE = "xy_average"
 XY_WEIGHTED_AVERAGE = "xy_weighted_average"
@@ -109,12 +108,12 @@ class WordClassifier:
 
     @staticmethod
     def filter_by_handwriting(dataframe, classes, user_data, handwriting):
-        d_temp = dataframe.join(classes).join(user_data[Utils.HANDWRITING], on=Utils.USER_ID).drop(Utils.USER_ID,
+        d_temp = dataframe.join(classes).join(user_data[utils.HANDWRITING], on=utils.USER_ID).drop(utils.USER_ID,
                                                                                                    axis=1)
-        dataframe_filt = d_temp[d_temp[Utils.HANDWRITING] == handwriting].drop(Utils.HANDWRITING, axis=1)
+        dataframe_filt = d_temp[d_temp[utils.HANDWRITING] == handwriting].drop(utils.HANDWRITING, axis=1)
 
-        c_temp = pandas.DataFrame(classes).join(user_data[Utils.HANDWRITING], on=Utils.USER_ID)
-        classes_filt = c_temp[c_temp[Utils.HANDWRITING] == handwriting].drop(Utils.HANDWRITING, axis=1).squeeze()
+        c_temp = pandas.DataFrame(classes).join(user_data[utils.HANDWRITING], on=utils.USER_ID)
+        classes_filt = c_temp[c_temp[utils.HANDWRITING] == handwriting].drop(utils.HANDWRITING, axis=1).squeeze()
 
         return dataframe_filt, classes_filt
 
@@ -356,7 +355,7 @@ class WordClassifier:
 
 
 if __name__ == '__main__':
-    a = WordClassifier(Utils.DATASET_NAME_0, Utils.ITALIC)
+    a = WordClassifier(utils.DATASET_NAME_0, utils.ITALIC)
     a.fit()
     print(a)
     print()
