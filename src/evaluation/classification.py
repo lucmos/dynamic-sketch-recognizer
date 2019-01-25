@@ -1,8 +1,7 @@
-
 import numpy as np
 
 
-def cms_curve(y_true, y_predicted_proba, classes):
+def cmc_curve(y_true, y_predicted_proba, classes):
     """
     CMS (at rank k) (Cumulative Match Score (at rank k) – The probability of identification at
     rank k, or even the ratio between the number of individuals which are correctly recognized among
@@ -15,7 +14,7 @@ def cms_curve(y_true, y_predicted_proba, classes):
     the first k places (CMS at rank k). If the number n of ranks in the curve equals the size of the
     gallery, we will surely have a probability value of 1 at point n.
 
-    RR (Recognition Rate) -CMS at rank 1 is also defined as Recognition Rate.
+    The CMS at rank 1 is also defined as Recognition Rate (RR).
 
     :param y_true: the observation's ground truth
     :param y_predicted_proba: the predicted probabilities for the classes

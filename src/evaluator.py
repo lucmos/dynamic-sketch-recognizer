@@ -77,20 +77,16 @@ class IdentificationEvaluator:
     def __init__(self, classifier: lr.WordClassifier):
         self.classifier = classifier
 
-    def cms_curve(self, svm_name, mov_weight=MOVEMENT_WEIGHT):
-        x_test, y_test = self.classifier.get_testdata()
-        classes = self.classifier.get_classes_()
-        y_estimated = self.classifier.predict_proba(svm_name, x_test, mov_weight)
-
+    def cms_curve(self, y_true, y_proba, classes):
         cms_values = []
         for i in range(0, len(classes)):
             cms_val_i = 0
-            for probs, y in zip(y_estimated, y_test):
+            for probs, y in zip(y_true, y_proba):
                 y_prob = probs[self.classifier.class_to_index(y)]
                 if sum(1 for a in probs if a > y_prob) <= i:
                     cms_val_i += 1
 
-            cms_values.append(cms_val_i / float(len(y_test)))
+            cms_values.append(cms_val_i / float(len(y_proba)))
         return list(range(0, len(classes) + 1)), [0] + cms_values
 
     def plot_info(self, name, w=MOVEMENT_WEIGHT):
@@ -167,5 +163,5 @@ if __name__ == '__main__':
 
         for svm in SVM_LIST:
             svm_name, rank, value = ide.plot_info(svm)
-            p.plotCMC(svm_name, rank, value, handwriting, svm)
+            p.cmc(svm_name, rank, value, handwriting, svm)
         chrono.millis()

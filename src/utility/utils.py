@@ -23,7 +23,7 @@ def load_pickle(filename, folder="."):
     return False
 
 
-def save_pickle(obj, filename, folder=".", override=False):
+def save_pickle(obj, filename, folder=".", override=True):
     """
     Save a object to a pickle file with the highest protocol available
     :param obj: object to save

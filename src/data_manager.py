@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 import json
 import pandas as pd
+import numpy as np
 
 import src.utility.chronometer as Chronom
 import src.data.json_wrapper as jw
 from src.constants.io_constants import RES_FOLDER, JSON_EXTENSION
 
-from src.constants.paths_generator import FolderPaths, FilePaths
+from src.constants.paths_generator import DataVisPaths, Paths
 from src.constants.literals import *
 from src.plotter import tseries_visualization
 from src.utility.utils import natural_keys
@@ -21,38 +22,38 @@ class DataManager:
 
         # one per item
         self.json_objs = []
-        self.files_name = []
+        self.file_names = []
         self.users_ids = []
-        self.observation_id = []
+        self.observation_ids = []
         self.items = []
 
         # one per point for each item
         self.tseries_movement_points = pd.DataFrame(
-            columns=[ITEM_ID,
+            columns=[OBSERVATION_ID,
                      TIME,
                      COMPONENT,
                      X,
-                     Y]).astype(float)
+                     Y]).astype(np.dtype(float))
 
         self.tseries_touch_up_points = pd.DataFrame(
-            columns=[ITEM_ID,
+            columns=[OBSERVATION_ID,
                      TIME,
                      COMPONENT,
                      X,
-                     Y]).astype(float)
+                     Y]).astype(np.dtype(float))
 
         self.tseries_touch_down_points = pd.DataFrame(
-            columns=[ITEM_ID,
+            columns=[OBSERVATION_ID,
                      TIME,
                      COMPONENT,
                      X,
-                     Y]).astype(float)
+                     Y]).astype(np.dtype(float))
 
         self.series_sampled_points = pd.DataFrame(
-            columns=[ITEM_ID,
+            columns=[OBSERVATION_ID,
                      COMPONENT,
                      X,
-                     Y]).astype(float)
+                     Y]).astype(np.dtype(float))
 
         self._read_data()
         self._generate_example_charts()
@@ -63,12 +64,12 @@ class DataManager:
         self.series_sampled_points = DataManager.normalize_positions(self.series_sampled_points)
 
     def _read_data(self):
-        assert os.path.isdir(FolderPaths.dataset_folder(self.dataset_name)), \
+        assert os.path.isdir(Paths.dataset_folder(self.dataset_name)), \
             "Insert the dataset \"" + self.dataset_name + "\" in: " + RES_FOLDER
 
         chrono = Chronom.Chrono("Reading json files...")
         observation_id = 0
-        for root, dirs, files in os.walk(FolderPaths.dataset_folder(self.dataset_name), True, None, False):
+        for root, dirs, files in os.walk(Paths.dataset_folder(self.dataset_name), True, None, False):
             for json_file in sorted(files, key=natural_keys):
                 if (json_file and json_file.endswith(JSON_EXTENSION)
                         and json_file not in FILE_BLACK_LIST):
@@ -83,12 +84,12 @@ class DataManager:
 
             self.json_objs.append(itemdata)
             self.items.append(itemdata.item)
-            self.observation_id.append(observation_id)
+            self.observation_ids.append(observation_id)
             self.users_ids.append(self.get_userid(itemdata))
-            self.files_name.append(json_name)
+            self.file_names.append(json_name)
 
             self.tseries_movement_points = self.tseries_movement_points.append(
-                pd.DataFrame([{ITEM_ID: observation_id,
+                pd.DataFrame([{OBSERVATION_ID: observation_id,
                                TIME: point.time,
                                COMPONENT: point.component,
                                X: point.x,
@@ -97,7 +98,7 @@ class DataManager:
                 ignore_index=True, sort=True)
 
             self.tseries_touch_down_points = self.tseries_touch_down_points.append(
-                pd.DataFrame([{ITEM_ID: observation_id,
+                pd.DataFrame([{OBSERVATION_ID: observation_id,
                                TIME: point.time,
                                COMPONENT: point.component,
                                X: point.x,
@@ -106,7 +107,7 @@ class DataManager:
                 ignore_index=True, sort=True)
 
             self.tseries_touch_up_points = self.tseries_touch_up_points.append(
-                pd.DataFrame([{ITEM_ID: observation_id,
+                pd.DataFrame([{OBSERVATION_ID: observation_id,
                                TIME: point.time,
                                COMPONENT: point.component,
                                X: point.x,
@@ -115,7 +116,7 @@ class DataManager:
                 ignore_index=True, sort=True)
 
             self.series_sampled_points = self.series_sampled_points.append(
-                pd.DataFrame([{ITEM_ID: observation_id,
+                pd.DataFrame([{OBSERVATION_ID: observation_id,
                                COMPONENT: point.component,
                                X: point.x,
                                Y: point.y}
@@ -130,7 +131,7 @@ class DataManager:
 
     @staticmethod
     def normalize_positions(tseries: pd.DataFrame):
-        return tseries.groupby(ITEM_ID).apply(DataManager._normalize_group)
+        return tseries.groupby(OBSERVATION_ID).apply(DataManager._normalize_group)
 
     @staticmethod
     def get_userid(item_data: jw.ItemData):
@@ -151,7 +152,7 @@ class DataManager:
         :param item_id: the item to retrieve
         :return: the tseries of the item identified by item_id
         """
-        return dataframe.loc[dataframe[ITEM_ID] == item_id]
+        return dataframe.loc[dataframe[OBSERVATION_ID] == item_id]
 
     def _generate_example_charts(self):
         examples_file_names = [
@@ -161,7 +162,7 @@ class DataManager:
 
         dataframe = self.tseries_movement_points
         for ex in examples_file_names:
-            item_id = self.files_name.index(ex)
+            item_id = self.file_names.index(ex)
             item_data: jw.ItemData = self.json_objs[item_id]
 
             tseries = DataManager.get_item_tseries(dataframe, item_id)
@@ -169,19 +170,19 @@ class DataManager:
             h = item_data.session_data.device_data.heigth_pixels
             w = item_data.session_data.device_data.width_pixels
 
-            fname = FilePaths.plot2d(self.dataset_name, item_data.item, DataManager.get_userid(item_data) + "_normalized")
+            fname = DataVisPaths.plot2d(self.dataset_name, item_data.item, DataManager.get_userid(item_data) + "_normalized")
             tseries_visualization.TimeSeries2D(DataManager.normalize_positions(tseries), fname, height=h, width=w)
 
-            fname = FilePaths.plot2d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
+            fname = DataVisPaths.plot2d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
             tseries_visualization.TimeSeries2D(tseries, fname, height=h, width=w)
 
-            fname = FilePaths.gif(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
+            fname = DataVisPaths.gif(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
             tseries_visualization.TimeSeries2DGIF(tseries, fname, height=h, width=w)
 
-            fname = FilePaths.gif3d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
+            fname = DataVisPaths.gif3d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
             tseries_visualization.TimeSeries3DGIF(tseries, fname, height=h, width=w)
 
-            fname = FilePaths.decomposition_gif3d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
+            fname = DataVisPaths.decomposition_gif3d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
             tseries_visualization.TimeSeriesDecomposition3DGIF(tseries, fname, height=h, width=w)
 
 
