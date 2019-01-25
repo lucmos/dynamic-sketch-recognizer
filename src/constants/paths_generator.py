@@ -4,7 +4,7 @@ import time
 from .io_constants import RES_FOLDER, ANIMATION_FOLDER_NAME, GIF2D_FOLDER_NAME, DECOMPOSITION_3D_FOLDER_NAME, \
     GIF_EXTENSION, \
     PNG_EXTENSION, GIF3D_FOLDER_NAME, PLOT2D_FOLDER_NAME, DATA_VISUALIZATION, CACHE_FOLDER_NAME, CACHE_FEATURES, \
-    RESULTS_FOLDER_NAME, CMC_FOLDER_NAME
+    RESULTS_FOLDER_NAME, CMC_FOLDER_NAME, CACHE_LEARNER
 from .io_constants import _RES_SUFFIX
 from .io_constants import ROOT_FOLDER
 from .io_constants import OUTPUT_FOLDER_NAME
@@ -96,6 +96,10 @@ class CachePaths:
     @staticmethod
     def features(dataset_name, fname):
         return CachePaths.cache_file(CachePaths.cache_folder(dataset_name), CACHE_FEATURES, fname, PICKLE_EXTENSION)
+
+    @staticmethod
+    def learner(dataset_name, fname):
+        return CachePaths.cache_file(CachePaths.cache_folder(dataset_name), CACHE_LEARNER, fname, PICKLE_EXTENSION)
 
 
 class ResultsPaths:

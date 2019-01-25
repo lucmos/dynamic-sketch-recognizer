@@ -1,6 +1,6 @@
 import sklearn.metrics
 
-import src.learner as lr
+import src.learner_nold as lr
 
 import numpy as np
 

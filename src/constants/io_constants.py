@@ -11,6 +11,7 @@ OUTPUT_FOLDER_NAME = "outputs"
 
 CACHE_FOLDER_NAME = "cache"
 CACHE_FEATURES = "features"
+CACHE_LEARNER = "learner"
 
 CSV_FOLDER_NAME = "csv"
 PICS_FOLDER_NAME = "pics"
