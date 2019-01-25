@@ -21,6 +21,7 @@ RESULTS_FOLDER_NAME = "results"
 CLASSIFICATION_REPORT = "classification_report"
 PREDICTIONS_RANKING = "ranking"
 BEST_PARAMS = "best_params"
+PARAMETERS = "parameters"
 
 CMC_FOLDER_NAME = "cmc"
 PLOT2D_FOLDER_NAME = "plot2D"

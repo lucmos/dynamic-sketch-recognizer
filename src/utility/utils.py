@@ -67,7 +67,7 @@ def save_json(obj, filename, override=False):
         json.dump(obj, handle, indent=4, sort_keys=True)
 
 
-def save_string(string, filename, override=False):
+def save_string(string, filename, override=True):
     """
       Save a string to a plain file
       :param string: string to save

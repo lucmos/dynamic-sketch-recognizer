@@ -164,6 +164,11 @@ class DataManager:
         examples_file_names = [
             ("pesce_Flavia_ischiboni_40.json", "21.01.2019.16.12"),
             ("candela_flavia_ischiboni_10.json", "24.01.2019.10.52"),
+            ("balena_Federica_Spini_64.json", "24.01.2019.14.44"),
+            ("barca_Federica_Spini_126.json", "25.01.2019.19.14"),
+            ("busta_Federica_Spini_189.json", "25.01.2019.19.14"),
+            ("busta_Matteo_Prata_6.json", "24.01.2019.15.20"),
+            ("cacciavite_Federica_Spini_68.json", "24.01.2019.14.44")
         ]
 
         def get_itemdata(reqeuest) -> jw.ItemData:

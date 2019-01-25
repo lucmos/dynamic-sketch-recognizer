@@ -6,7 +6,7 @@ from .io_constants import RES_FOLDER, ANIMATION_FOLDER_NAME, GIF2D_FOLDER_NAME, 
     GIF_EXTENSION, \
     PNG_EXTENSION, GIF3D_FOLDER_NAME, PLOT2D_FOLDER_NAME, DATA_VISUALIZATION, CACHE_FOLDER_NAME, CACHE_FEATURES, \
     RESULTS_FOLDER_NAME, CMC_FOLDER_NAME, CACHE_LEARNER, CLASSIFICATION_REPORT, TXT_EXTENSION, PREDICTIONS_RANKING, \
-    BEST_PARAMS
+    BEST_PARAMS, PARAMETERS
 from .io_constants import ROOT_FOLDER
 from .io_constants import OUTPUT_FOLDER_NAME
 from .io_constants import PICS_FOLDER_NAME
@@ -130,6 +130,10 @@ class ResultsPaths:
     @staticmethod
     def ranking(dataset_name, fname):
         return ResultsPaths.result_file(ResultsPaths.results_folder(dataset_name), PREDICTIONS_RANKING, fname, TXT_EXTENSION)
+
+    @staticmethod
+    def parameters(dataset_name, fname):
+        return ResultsPaths.result_file(ResultsPaths.results_folder(dataset_name), PARAMETERS, fname, TXT_EXTENSION)
 
     @staticmethod
     def best_params(dataset_name, fname):

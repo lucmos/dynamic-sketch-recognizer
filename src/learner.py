@@ -34,6 +34,12 @@ from src.utility import utils
 class Learner:
     version = "1.2"
 
+    TUNED_PARAMETERS = [{'kernel': ['rbf'],
+                         'gamma': ['auto', 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8],
+                         'C': [0.001, 1, 100, 1000, 2500, 4000, 4500, 5000, 5500,
+                               6000, 7000, 7500, 8000]}]
+    TEST_SIZE = 0.4
+
     # FDR_LEVEL = 0.15
 
     # If AUGMENTER changes, even the name of the optional parameter
@@ -58,88 +64,92 @@ class Learner:
             return p
 
         _instance = Learner(dataset_name)
+        _instance.fit_predict()
         utils.save_pickle(_instance, CachePaths.learner(dataset_name, Learner.version), override=True)
         c.millis("Saving into: {}".format(CachePaths.learner(dataset_name, Learner.version)))
         return _instance
 
     def __init__(self, dataset_name):
         self.data = dm.DataManager(dataset_name)
-        self.pipeline = None
 
-        self.fit_predict()
+        self.x_train = None
+        self.x_test = None
+        self.tseries_train = None
+        self.tseries_test = None
+        self.y_train = None
+        self.y_test = None
+
+        self.classes = None
+        self.y_test = None
+        self.y_pred = None
+        self.y_proba = None
 
     def get_timeseries(self):
         return self.data.observation_ids, self.data.tseries_movement_points  # todo prova a concatenarle
         # return self.data.observation_ids, self.data.tseries_touch_up_points  # todo prova a concatenarle
 
-    def get_classes(self):
+    def get_labels(self):
         return pd.Series(self.data.items)
 
     def fit_predict(self):
 
         c = Chrono("Splitting into train/set...")
         obs_ids, tseries = self.get_timeseries()
-        x_train, x_test, tseries_train, tseries_test, y_train, y_test = self.tseries_train_test_split(
+        self.x_train, self.x_test, self.tseries_train, self.tseries_test, self.y_train, self.y_test = self.tseries_train_test_split(
             tseries,
-            self.get_classes(),
+            self.get_labels(),
             self.data.observation_ids)
         c.millis()
 
-        print("Tseries train", tseries_train.shape)
-        print("xtrain train", x_train.shape)
-        print("ytrain train", y_train.shape)
-        print("Tseries test", tseries_test.shape)
-        print("xtest test", x_test.shape)
+        print("Tseries train", self.tseries_train.shape)
+        print("xtrain train", self.x_train.shape)
+        print("ytrain train", self.y_train.shape)
+        print("Tseries test", self.tseries_test.shape)
+        print("xtest test", self.x_test.shape)
 
-        print("y_test", len(y_test))
-        # print(x_train.shape)
-        # print(x_test.shape)
-        # print(tseries_train.shape)
-        # print(tseries_test.shape)
-        # print(y_train.shape)
-        # print(y_test.shape)
-        # print(tseries_test.head())
+        print("y_test", len(self.y_test))
+        # print(self.x_train.shape)
+        # print(self.x_test.shape)
+        # print(self.tseries_train.shape)
+        # print(self.tseries_test.shape)
+        # print(self.y_train.shape)
+        # print(self.y_test.shape)
+        # print(self.tseries_test.head())
 
         c = Chrono("Building pipeline...")
-        self.pipeline = self.build_pipeline()
+        pipeline = self.build_pipeline()
         c.millis()
 
         c = Chrono("Fitting pipeline...")
-        self.pipeline.set_params(augmenter__timeseries_container=tseries_train)
-        self.pipeline.fit(x_train, y_train)
+        pipeline.set_params(augmenter__timeseries_container=self.tseries_train)
+        pipeline.fit(self.x_train, self.y_train)
         c.millis()
 
         c = Chrono("Predicting classes...")
-        self.pipeline.set_params(augmenter__timeseries_container=tseries_test)
-        y_pred = self.pipeline.predict(x_test)
+        pipeline.set_params(augmenter__timeseries_container=self.tseries_test)
+        self.y_pred = pipeline.predict(self.x_test)
         c.millis()
 
         c = Chrono("Predicting probas..")
-        y_proba = self.pipeline.predict_proba(x_test)
+        self.y_proba = pipeline.predict_proba(self.x_test)
         c.millis()
 
-        # todo try to evaluate the random classifier
+        self.classes = self.get_classifier(pipeline).classes_
 
-        r = sklearn.metrics.classification_report(y_test, y_pred)
-        utils.save_string(r, ResultsPaths.classification_report(self.data.dataset_name, "some_testing"), override=True)
-        print(r)
+        self.evaluate()
 
-        b = "\Best estimator:\n" + str(self.get_classifier().best_estimator_)
-        utils.save_string(b, ResultsPaths.best_params(self.data.dataset_name, "some_testing"), override=True)
+        b = "Best estimator:\n" + str(self.get_classifier(pipeline).best_estimator_)
+        utils.save_string(b, ResultsPaths.best_params(self.data.dataset_name, Learner.version), override=True)
 
-        ranks, cms_values = cmc_curve(y_test, y_proba, self.get_classifier().classes_)
-        ClassificationPerformances.cmc(ResultsPaths.cmc(DATASET_NAME_0, "some_testing"), ranks, cms_values)
+        # save parameters
+        utils.save_json(Learner.TUNED_PARAMETERS, ResultsPaths.parameters(self.data.dataset_name, "tuned_parameters_{}".format(Learner.version)))
+        utils.save_json(Learner.TEST_SIZE, ResultsPaths.parameters(self.data.dataset_name, "test_size_{}".format(Learner.version)))
+        utils.save_string(str(pipeline.named_steps), ResultsPaths.parameters(self.data.dataset_name, "pipeline_{}".format(Learner.version)))
 
-        out = {}
-        for p, y in zip(y_proba, y_test):
-            predictions = list(zip(p, self.get_classifier().classes_))
-            if y not in out:
-                out[y] = []
-            out[y].append([x for _, x in sorted(predictions, key=lambda x: x[0], reverse=True)])
-        utils.save_json(out, ResultsPaths.ranking(self.data.dataset_name, "some_testing"))
+
 
     @staticmethod
-    def tseries_train_test_split(tseries, items, observation_ids, test_size=0.35):
+    def tseries_train_test_split(tseries, items, observation_ids, test_size=TEST_SIZE):
         obs_train, obs_test, y_train, y_test = train_test_split(observation_ids,
                                                                 items,
                                                                 stratify=items,
@@ -163,12 +173,7 @@ class Learner:
 
     @staticmethod
     def classifier():
-        tuned_parameters = [{'kernel': ['rbf'],
-                             'gamma': ['auto', 0, 1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8],
-                             'C': [0.001, 0.1, 1, 10, 100, 500, 1000, 2500, 4000, 4500, 5000, 5500,
-                                   6000, 7000, 7500, 8000, 10000]}]
-
-        return GridSearchCV(SVC(probability=True), tuned_parameters, cv=4, refit=True, n_jobs=-1)
+        return GridSearchCV(SVC(probability=True), Learner.TUNED_PARAMETERS, cv=4, refit=True, n_jobs=-1)
         # return SVC(C=7500, gamma=1e-07, probability=True)
 
     @staticmethod
@@ -181,20 +186,39 @@ class Learner:
             ]
         )
 
-    def get_feature_augmenter(self):
-        assert self.pipeline
-        return self.pipeline.named_steps[Learner.AUGMENTER]
+    @staticmethod
+    def get_feature_augmenter(pipeline):
+        assert pipeline
+        return pipeline.named_steps[Learner.AUGMENTER]
 
-    def get_scaler(self):
-        assert self.pipeline
-        return self.pipeline.named_steps[Learner.SCALER]
+    @staticmethod
+    def get_scaler(pipeline):
+        assert pipeline
+        return pipeline.named_steps[Learner.SCALER]
 
-    def get_classifier(self):
-        assert self.pipeline
-        return self.pipeline.named_steps[Learner.CLASSIFIER]
+    @staticmethod
+    def get_classifier(pipeline):
+        assert pipeline
+        return pipeline.named_steps[Learner.CLASSIFIER]
+
+    def evaluate(self):
+        r = sklearn.metrics.classification_report(self.y_test, self.y_pred)
+        utils.save_string(r, ResultsPaths.classification_report(self.data.dataset_name, Learner.version), override=True)
+        print(r)
+
+        ranks, cms_values = cmc_curve(self.y_test, self.y_proba, self.classes)
+        ClassificationPerformances.cmc(ResultsPaths.cmc(DATASET_NAME_0, Learner.version), ranks, cms_values)
+
+        out = {}
+        for p, y in zip(self.y_proba, self.y_test):
+            predictions = list(zip(p, self.classes))
+            if y not in out:
+                out[y] = []
+            out[y].append([x for _, x in sorted(predictions, key=lambda x: x[0], reverse=True)])
+        utils.save_json(out, ResultsPaths.ranking(self.data.dataset_name, Learner.version))
 
 
 if __name__ == '__main__':
     print("RESULTS TIME: {}".format(ResultsPaths.get_time()))
-    Learner.get_instance(DATASET_NAME_0, renew_cache=True)
+    l = Learner.get_instance(DATASET_NAME_0, renew_cache=True)
 
