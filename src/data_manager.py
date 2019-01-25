@@ -211,3 +211,6 @@ if __name__ == "__main__":
     #                                                 COMPONENT,
     #                                                 X,
     #                                                 Y])
+
+    pd.options.display.max_rows = 10000
+    print(d.tseries_movement_points)

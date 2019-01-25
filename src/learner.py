@@ -133,7 +133,9 @@ class Learner:
         out = {}
         for p, y in zip(y_proba, y_test):
             predictions = list(zip(p, self.get_classifier().classes_))
-            out[y] = [x for _, x in sorted(predictions, key=lambda x: x[0], reverse=True)]
+            if y not in out:
+                out[y] = []
+            out[y].append([x for _, x in sorted(predictions, key=lambda x: x[0], reverse=True)])
         utils.save_json(out, ResultsPaths.ranking(self.data.dataset_name, "some_testing"))
 
     @staticmethod
