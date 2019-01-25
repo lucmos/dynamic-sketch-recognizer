@@ -1,0 +1,74 @@
+                  precision    recall  f1-score   support
+
+           aereo       0.00      0.00      0.00         4
+      arcobaleno       0.00      0.00      0.00         3
+           baffi       0.00      0.00      0.00         4
+          balena       0.00      0.00      0.00         4
+           barca       0.00      0.00      0.00         4
+       bottiglia       0.00      0.00      0.00         4
+           busta       0.00      0.00      0.00         4
+      cacciavite       0.00      0.00      0.00         4
+          calice       0.00      0.00      0.00         3
+         calzino       0.00      0.00      0.00         4
+         candela       0.00      0.00      0.00         4
+            cane       0.00      0.00      0.00         4
+          chiave       0.00      0.00      0.00         4
+        chitarra       0.00      0.00      0.00         3
+           cigno       0.09      0.25      0.13         4
+     coccodrillo       0.00      0.00      0.00         4
+         cornice       0.00      0.00      0.00         4
+          corona       0.00      0.00      0.00         4
+         cuscino       0.00      0.00      0.00         4
+          faccia       0.00      0.00      0.00         4
+      fiammifero       0.00      0.00      0.00         3
+          fiocco       0.00      0.00      0.00         4
+           fiume       0.00      0.00      0.00         4
+       forchetta       0.00      0.00      0.00         4
+         fulmine       0.07      0.50      0.12         4
+           gatto       0.00      0.00      0.00         4
+          gelato       0.00      0.00      0.00         3
+     grattacielo       0.00      0.00      0.00         3
+       lampadina       0.00      0.00      0.00         4
+       lavatrice       0.00      0.00      0.00         4
+           libro       0.00      0.00      0.00         4
+            luna       0.00      0.00      0.00         4
+        macchina       0.00      0.00      0.00         4
+            mare       0.00      0.00      0.00         4
+          matita       0.00      0.00      0.00         4
+        montagna       0.00      0.00      0.00         4
+          nuvola       0.00      0.00      0.00         4
+           omino       0.33      0.33      0.33         3
+        orecchio       0.00      0.00      0.00         4
+        orologio       0.00      0.00      0.00         4
+           pesce       0.00      0.00      0.00         4
+           piede       1.00      0.25      0.40         4
+     pipistrello       0.00      0.00      0.00         4
+ pupazzo.di.neve       0.00      0.00      0.00         4
+           ragno       0.00      0.00      0.00         4
+        rossetto       0.00      0.00      0.00         4
+           ruota       0.00      0.00      0.00         4
+       sassofono       0.00      0.00      0.00         4
+    scarabocchio       0.00      0.00      0.00         4
+          scarpa       0.00      0.00      0.00         4
+         secchio       0.00      0.00      0.00         4
+          sirena       0.00      0.00      0.00         4
+           smile       0.00      0.00      0.00         4
+            sole       0.00      0.00      0.00         4
+           spada       0.00      0.00      0.00         4
+          stella       0.14      1.00      0.24         4
+         t-shirt       0.00      0.00      0.00         4
+           tazza       0.09      0.75      0.16         4
+         teschio       0.25      0.33      0.29         3
+torcia.elettrica       0.00      0.00      0.00         4
+             uva       0.05      1.00      0.09         3
+
+       micro avg       0.07      0.07      0.07       235
+       macro avg       0.03      0.07      0.03       235
+    weighted avg       0.03      0.07      0.03       235
+
+
+Best estimator:
+SVC(C=100, cache_size=200, class_weight=None, coef0=0.0,
+  decision_function_shape='ovr', degree=3, gamma=1e-08, kernel='rbf',
+  max_iter=-1, probability=True, random_state=None, shrinking=True,
+  tol=0.001, verbose=False)

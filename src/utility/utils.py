@@ -76,7 +76,8 @@ def save_string(string, filename, override=False):
       """
     if os.path.isfile(filename) and not override:
         filename = filename + "_be_safe" # to not lose info for distraction
-
+        #
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
     with open(filename, "w") as handle:
         handle.write(string)
 

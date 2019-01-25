@@ -10,7 +10,7 @@ from sklearn.svm import SVC
 from tsfresh.transformers import RelevantFeatureAugmenter
 
 from src.constants.paths_generator import CachePaths, ResultsPaths
-from src.plotter.plotter import Plotter as p
+from src.plotter.performances import ClassificationPerformances
 
 # warnings.simplefilter(action='ignore', category=FutureWarning)
 import logging
@@ -25,7 +25,7 @@ import numpy as np
 
 import src.data_manager as dm
 from src.constants.literals import *
-import src.utility.chronometer as Chronom
+from src.utility.chronometer import Chrono
 from src.utility import utils
 
 
@@ -36,6 +36,8 @@ class Learner:
 
     # FDR_LEVEL = 0.15
 
+    # If AUGMENTER changes, even the name of the optional parameter
+    # in set params must change
     AUGMENTER = "augmenter"
     SCALER = "scaler"
     CLASSIFIER = "classifier"
@@ -47,7 +49,7 @@ class Learner:
         if Learner._instance:
             return Learner._instance
 
-        c = Chronom.Chrono("Creating learner...")
+        c = Chrono("Creating learner...")
 
         if (os.path.isfile(CachePaths.learner(dataset_name, Learner.version))
                 and not renew_cache):
@@ -56,26 +58,40 @@ class Learner:
             return p
 
         _instance = Learner(dataset_name)
-        utils.save_pickle(_instance, CachePaths.learner(dataset_name, Learner.version))
-        c.millis("trained")
+        utils.save_pickle(_instance, CachePaths.learner(dataset_name, Learner.version), override=True)
+        c.millis("Saving into: {}".format(CachePaths.learner(dataset_name, Learner.version)))
         return _instance
 
     def __init__(self, dataset_name):
         self.data = dm.DataManager(dataset_name)
-        self.pipeline = self.build_pipeline()
+        self.pipeline = None
+
+        self.fit_predict()
 
     def get_timeseries(self):
-        return self.data.observation_ids, self.data.tseries_movement_points #todo prova a concatenarle
+        return self.data.observation_ids, self.data.tseries_movement_points  # todo prova a concatenarle
+        # return self.data.observation_ids, self.data.tseries_touch_up_points  # todo prova a concatenarle
 
     def get_classes(self):
         return pd.Series(self.data.items)
 
     def fit_predict(self):
 
+        c = Chrono("Splitting into train/set...")
         obs_ids, tseries = self.get_timeseries()
-        x_train, x_test, tseries_train, tseries_test, y_train, y_test = self.tseries_train_test_split(tseries,
-                                                                                                   self.get_classes(),
-                                                                                                   self.data.observation_ids)
+        x_train, x_test, tseries_train, tseries_test, y_train, y_test = self.tseries_train_test_split(
+            tseries,
+            self.get_classes(),
+            self.data.observation_ids)
+        c.millis()
+
+        print("Tseries train", tseries_train.shape)
+        print("xtrain train", x_train.shape)
+        print("ytrain train", y_train.shape)
+        print("Tseries test", tseries_test.shape)
+        print("xtest test", x_test.shape)
+
+        print("y_test", len(y_test))
         # print(x_train.shape)
         # print(x_test.shape)
         # print(tseries_train.shape)
@@ -84,33 +100,41 @@ class Learner:
         # print(y_test.shape)
         # print(tseries_test.head())
 
-        print(">>>Fitting")
-        print("Tseries train", tseries_train.shape)
-        print("xtrain train", x_train.shape)
-        print("ytrain train", y_train.shape)
-        self.pipeline.set_params(relevantfeatureaugmenter__timeseries_container=tseries_train)
+        c = Chrono("Building pipeline...")
+        self.pipeline = self.build_pipeline()
+        c.millis()
+
+        c = Chrono("Fitting pipeline...")
+        self.pipeline.set_params(augmenter__timeseries_container=tseries_train)
         self.pipeline.fit(x_train, y_train)
+        c.millis()
 
-        print(">>> Predicting")
-        print("Tseries test", tseries_test.shape)
-        print("xtest test", x_test.shape)
-        self.pipeline.set_params(relevantfeatureaugmenter__timeseries_container=tseries_test)
+        c = Chrono("Predicting classes...")
+        self.pipeline.set_params(augmenter__timeseries_container=tseries_test)
         y_pred = self.pipeline.predict(x_test)
+        c.millis()
 
-        print(">>>Probas")
-        print("y_pred", len(y_pred))
-        print("y_test", len(y_test))
+        c = Chrono("Predicting probas..")
         y_proba = self.pipeline.predict_proba(x_test)
+        c.millis()
 
-        print(sklearn.metrics.classification_report(y_test, y_pred))
+        # todo try to evaluate the random classifier
+
+        r = sklearn.metrics.classification_report(y_test, y_pred)
+        utils.save_string(r, ResultsPaths.classification_report(self.data.dataset_name, "some_testing"), override=True)
+        print(r)
+
+        b = "\Best estimator:\n" + str(self.get_classifier().best_estimator_)
+        utils.save_string(b, ResultsPaths.best_params(self.data.dataset_name, "some_testing"), override=True)
 
         ranks, cms_values = cmc_curve(y_test, y_proba, self.get_classifier().classes_)
-        p.cmc(ResultsPaths.cmc(DATASET_NAME_0, "new_ersion"), ranks, cms_values)
+        ClassificationPerformances.cmc(ResultsPaths.cmc(DATASET_NAME_0, "some_testing"), ranks, cms_values)
 
+        out = {}
         for p, y in zip(y_proba, y_test):
             predictions = list(zip(p, self.get_classifier().classes_))
-            print("{}:\t{}".format(y, [x for _, x in sorted(predictions, key=lambda x: x[0], reverse=True)]))
-
+            out[y] = [x for _, x in sorted(predictions, key=lambda x: x[0], reverse=True)]
+        utils.save_json(out, ResultsPaths.ranking(self.data.dataset_name, "some_testing"))
 
     @staticmethod
     def tseries_train_test_split(tseries, items, observation_ids, test_size=0.35):
@@ -137,7 +161,13 @@ class Learner:
 
     @staticmethod
     def classifier():
-        return SVC(C=7500, gamma=1e-07, probability=True)
+        tuned_parameters = [{'kernel': ['rbf'],
+                             'gamma': ['auto', 0, 1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8],
+                             'C': [0.001, 0.1, 1, 10, 100, 500, 1000, 2500, 4000, 4500, 5000, 5500,
+                                   6000, 7000, 7500, 8000, 10000]}]
+
+        return GridSearchCV(SVC(probability=True), tuned_parameters, cv=4, refit=True, n_jobs=-1)
+        # return SVC(C=7500, gamma=1e-07, probability=True)
 
     @staticmethod
     def build_pipeline():
@@ -161,96 +191,8 @@ class Learner:
         assert self.pipeline
         return self.pipeline.named_steps[Learner.CLASSIFIER]
 
-if __name__ == '__main__':
-    # f = Learner.get_instance(DATASET_NAME_0, renew_cache=False)
-    # d = f.data.tseries_movement_points
-    #
-    # x_train, x_test, tseries_train, tseries_test, y_train, y_test = f.tseries_train_test_split(d,
-    #                                                                                            f.get_classes(),
-    #                                                                                            f.data.observation_ids)
-    # # print(x_train.shape)
-    # # print(x_test.shape)
-    # # print(tseries_train.shape)
-    # # print(tseries_test.shape)
-    # # print(y_train.shape)
-    # # print(y_test.shape)
-    # # print(tseries_test.head())
-    # 
-    # print(">>>Fitting")
-    # print("Tseries train", tseries_train.shape)
-    # print("xtrain train", x_train.shape)
-    # print("ytrain train", y_train.shape)
-    # pipeline.set_params(relevantfeatureaugmenter__timeseries_container=tseries_train)
-    # pipeline.fit(x_train, y_train)
-    #
-    # print(">>> Predicting")
-    # print("Tseries test", tseries_test.shape)
-    # print("xtest test", x_test.shape)
-    # pipeline.set_params(relevantfeatureaugmenter__timeseries_container=tseries_test)
-    # y_pred = pipeline.predict(x_test)
-    #
-    # print(">>>Probas")
-    # print("y_pred", len(y_pred))
-    # print("y_test", len(y_test))
-    # y_proba = pipeline.predict_proba(x_test)
-    #
-    # print(sklearn.metrics.classification_report(y_test, y_pred))
-    #
-    # ranks, cms_values = cmc_curve(y_test, y_proba, pipeline.classes_)
-    # p.cmc(ResultsPaths.cmc(DATASET_NAME_0, "new_ersion"), ranks, cms_values)
-    #
-    # for p, y in zip(y_proba, y_test):
-    #     predictions = list(zip(p, classifier.classes_))
-    #     print("{}:\t{}".format(y, [x for _, x in sorted(predictions, key=lambda x: x[0], reverse=True)]))
 
-# features = f.features[MOVEMENT_POINTS]
-# print(f.data.tseries_movement_points.head())
-# print(len(set(f.data.tseries_movement_points[ITEM_ID])))
-#
-# print("Data: ", f.data.tseries_movement_points.shape)
-# print("Features: ", features.shape)
-# print("Labels: ", f.get_classes().shape)
-#
-# for x in f.data.files_name:
-#     print(x)
-#     import sklearn.model_selection
-#
-#     xtrain, xtest, y_train, y_test = sklearn.model_selection.train_test_split(
-#         features, f.get_classes(),
-#         stratify=f.get_classes(),
-#         random_state=42,
-#         test_size=0.35)
-#     print(len(f.get_classes()))
-#     TUNED_PARAMETERS = [{'kernel': ['rbf'], 'gamma':
-#         ['auto', 0, 1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8],
-#                          'C': [0.001, 0.1, 1, 10, 100, 500, 1000, 2500, 5000, 7500, 10000]}]
-#     CV = 3
-#
-#     # v = GridSearchCV(SVC(), TUNED_PARAMETERS, cv=CV, refit=True, n_jobs=-1)
-#     v = SVC(C=7500, gamma=1e-07, probability=True)
-#     predictor = make_pipeline(sklearn.preprocessing.RobustScaler(), v)
-#     print("Fitting")
-#     predictor.fit(xtrain, y_train)
-#
-#     print("Predictions")
-#     predictions = predictor.predict(xtest)
-#     probas = predictor.predict_proba(xtest)
-#
-#     print(sklearn.metrics.classification_report(y_test, predictions))
-#     print(len(v.classes_))
-#     print(Counter(f.get_classes()))
-#
-#     print(cmc_curve(y_test, probas, predictor.classes_))
-#     a,b =cmc_curve(y_test, probas, predictor.classes_)
-#     for x in zip(a,b):
-#         print(x)
-#     print("start")
-#     print(a)
-#     print(b)
-#     print("end")
-#     print(len(a))
-#     print(len(b))
-#
-#     from src.plotter.plotter import Plotter as p
-#     p.cmc(ResultsPaths.cmc(DATASET_NAME_0, "old_version"), a, b)
-# #    print(v.best_estimator_)
+if __name__ == '__main__':
+    print("RESULTS TIME: {}".format(ResultsPaths.get_time()))
+    Learner.get_instance(DATASET_NAME_0, renew_cache=True)
+

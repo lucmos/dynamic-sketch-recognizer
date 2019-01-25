@@ -23,6 +23,7 @@ class DataManager:
         # one per item
         self.json_objs = []
         self.file_names = []
+        self.file_paths = []
         self.users_ids = []
         self.observation_ids = []
         self.items = []
@@ -87,6 +88,7 @@ class DataManager:
             self.observation_ids.append(observation_id)
             self.users_ids.append(self.get_userid(itemdata))
             self.file_names.append(json_name)
+            self.file_paths.append(json_path)
 
             self.tseries_movement_points = self.tseries_movement_points.append(
                 pd.DataFrame([{OBSERVATION_ID: observation_id,
@@ -155,14 +157,20 @@ class DataManager:
         return dataframe.loc[dataframe[OBSERVATION_ID] == item_id]
 
     def _generate_example_charts(self):
+
         examples_file_names = [
-            "pesce_Flavia_ischiboni_40.json",
-            "candela_flavia_ischiboni_10.json"
+            ("pesce_Flavia_ischiboni_40.json", "21.01.2019.16.12"),
+            ("candela_flavia_ischiboni_10.json", "24.01.2019.10.52"),
         ]
 
+        def get_itemdata(reqeuest) -> jw.ItemData:
+            return self.json_objs[reqeuest]
+
         dataframe = self.tseries_movement_points
-        for ex in examples_file_names:
-            item_id = self.file_names.index(ex)
+        for ex_name, ex_date in examples_file_names:
+            item_id, = [i for i, x in enumerate(self.file_names) if x == ex_name and
+                        get_itemdata(i).session_data.date == ex_date]
+
             item_data: jw.ItemData = self.json_objs[item_id]
 
             tseries = DataManager.get_item_tseries(dataframe, item_id)

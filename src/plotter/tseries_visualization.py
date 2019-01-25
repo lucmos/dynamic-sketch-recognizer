@@ -355,7 +355,7 @@ class TimeSeriesDecomposition3DGIF:
             chrono.millis("already exixst")
             return
 
-        maxv = max(self.tseries[self.time_column])
+        maxv = int(max(self.tseries[self.time_column]))
         scaling_list = range(0, maxv + 1, self.scaling_rate)
 
         fig = plt.figure()

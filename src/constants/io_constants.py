@@ -18,6 +18,9 @@ PICS_FOLDER_NAME = "pics"
 DATA_VISUALIZATION = "visualization"
 ANIMATION_FOLDER_NAME = "animation"
 RESULTS_FOLDER_NAME = "results"
+CLASSIFICATION_REPORT = "classification_report"
+PREDICTIONS_RANKING = "ranking"
+BEST_PARAMS = "best_params"
 
 CMC_FOLDER_NAME = "cmc"
 PLOT2D_FOLDER_NAME = "plot2D"
@@ -30,6 +33,8 @@ CSV_EXTENSION = ".csv"
 PICKLE_EXTENSION = ".pickle"
 GIF_EXTENSION = ".gif"
 PNG_EXTENSION = ".png"
+TXT_EXTENSION = ".txt"
+
 
 DATAFRAME = "dataframe"
 

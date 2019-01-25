@@ -131,7 +131,7 @@ TO_DO_TOGHETER = [(SVM_LIST_NOSHIFT, "setnoshift"),
 
 # todo: ottimizza evitando la ripetizione di calcoli
 if __name__ == '__main__':
-    p = plotter.Plotter(utils.DATASET_NAME_0)
+    p = visualization.Plotter(utils.DATASET_NAME_0)
 
     for handwriting in [utils.ITALIC, utils.BLOCK_LETTER]:
         classifier = lr.WordClassifier(utils.DATASET_NAME_0, handwriting)

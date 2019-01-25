@@ -1,19 +1,16 @@
 import os
 import time
 
+
 from .io_constants import RES_FOLDER, ANIMATION_FOLDER_NAME, GIF2D_FOLDER_NAME, DECOMPOSITION_3D_FOLDER_NAME, \
     GIF_EXTENSION, \
     PNG_EXTENSION, GIF3D_FOLDER_NAME, PLOT2D_FOLDER_NAME, DATA_VISUALIZATION, CACHE_FOLDER_NAME, CACHE_FEATURES, \
-    RESULTS_FOLDER_NAME, CMC_FOLDER_NAME, CACHE_LEARNER
-from .io_constants import _RES_SUFFIX
+    RESULTS_FOLDER_NAME, CMC_FOLDER_NAME, CACHE_LEARNER, CLASSIFICATION_REPORT, TXT_EXTENSION, PREDICTIONS_RANKING, \
+    BEST_PARAMS
 from .io_constants import ROOT_FOLDER
 from .io_constants import OUTPUT_FOLDER_NAME
-from .io_constants import GENERATED_FOLDER_NAME
-from .io_constants import CSV_FOLDER_NAME
 from .io_constants import PICS_FOLDER_NAME
 from .io_constants import PICKLE_EXTENSION
-from .io_constants import DATAFRAME
-from .io_constants import CSV_EXTENSION
 
 
 class Paths:
@@ -24,8 +21,6 @@ class Paths:
     @staticmethod
     def output_folder(dataset_name):
         return os.path.join(ROOT_FOLDER, OUTPUT_FOLDER_NAME, dataset_name)
-
-
 
 
 class DataVisPaths:
@@ -107,22 +102,38 @@ class ResultsPaths:
     TIME = None
 
     @staticmethod
-    def results_folder(dataset_name):
+    def get_time():
         if ResultsPaths.TIME is None:
-            ResultsPaths.TIME = time.strftime('%H.%M_%d-%m-%Y')
-        return os.path.join(Paths.output_folder(dataset_name), RESULTS_FOLDER_NAME, ResultsPaths.TIME)
+            ResultsPaths.TIME = time.strftime('%d-%m-%Y_%H.%M')
+        return ResultsPaths.TIME
+
 
     @staticmethod
-    def plot_file(folder_path, subfolder, fname, extension):
+    def results_folder(dataset_name):
+
+        return os.path.join(Paths.output_folder(dataset_name), RESULTS_FOLDER_NAME, ResultsPaths.get_time())
+
+    @staticmethod
+    def result_file(folder_path, subfolder, fname, extension):
         if not subfolder:
             return os.path.join(folder_path, fname + extension)
         return os.path.join(folder_path, subfolder, fname + extension)
 
     @staticmethod
     def cmc(dataset_name, fname):
-        return ResultsPaths.plot_file(ResultsPaths.results_folder(dataset_name), CMC_FOLDER_NAME, fname, PNG_EXTENSION)
+        return ResultsPaths.result_file(ResultsPaths.results_folder(dataset_name), CMC_FOLDER_NAME, fname, PNG_EXTENSION)
 
+    @staticmethod
+    def classification_report(dataset_name, fname):
+        return ResultsPaths.result_file(ResultsPaths.results_folder(dataset_name), CLASSIFICATION_REPORT, fname, TXT_EXTENSION)
 
+    @staticmethod
+    def ranking(dataset_name, fname):
+        return ResultsPaths.result_file(ResultsPaths.results_folder(dataset_name), PREDICTIONS_RANKING, fname, TXT_EXTENSION)
+
+    @staticmethod
+    def best_params(dataset_name, fname):
+        return ResultsPaths.result_file(ResultsPaths.results_folder(dataset_name), BEST_PARAMS, fname, TXT_EXTENSION)
 
 # BUILD_DATAFRAME_PICKLE_PATH = lambda dataset_name, file: BUILD_FILE_PATH(BUILD_GENERATED_FOLDER(dataset_name), file,
 #                                                                          DATAFRAME, PICKLE_EXTENSION)
