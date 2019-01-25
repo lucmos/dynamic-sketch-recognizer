@@ -59,6 +59,9 @@ class DataManager:
         self._read_data()
         self._generate_example_charts()
 
+        assert (len(self.json_objs) == len(self.file_names) == len(self.file_paths) == len(self.users_ids)
+                == len(self.observation_ids) == len(self.items))
+
         self.tseries_movement_points = DataManager.normalize_positions(self.tseries_movement_points)
         self.tseries_touch_down_points = DataManager.normalize_positions(self.tseries_touch_down_points)
         self.tseries_touch_up_points = DataManager.normalize_positions(self.tseries_touch_up_points)
@@ -214,3 +217,5 @@ if __name__ == "__main__":
 
     pd.options.display.max_rows = 10000
     print(d.tseries_movement_points)
+    print("Number of items: {}".format(len(d.items)))
+

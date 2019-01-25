@@ -32,7 +32,7 @@ from src.utility import utils
 # pd.options.display.max_rows = 10000#
 
 class Learner:
-    version = "1.1"
+    version = "1.2"
 
     # FDR_LEVEL = 0.15
 

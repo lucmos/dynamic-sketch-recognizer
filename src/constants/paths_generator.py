@@ -104,7 +104,7 @@ class ResultsPaths:
     @staticmethod
     def get_time():
         if ResultsPaths.TIME is None:
-            ResultsPaths.TIME = time.strftime('%d-%m-%Y_%H.%M')
+            ResultsPaths.TIME = time.strftime('%d.%m.%Y_%H.%M')
         return ResultsPaths.TIME
 
 
