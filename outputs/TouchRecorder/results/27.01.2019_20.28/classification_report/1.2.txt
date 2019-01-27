@@ -1,0 +1,67 @@
+                  precision    recall  f1-score   support
+
+           aereo       0.20      0.29      0.24         7
+      arcobaleno       0.83      0.71      0.77         7
+           baffi       0.02      0.14      0.04         7
+          balena       0.22      0.29      0.25         7
+           barca       0.75      0.43      0.55         7
+       bottiglia       0.11      0.14      0.12         7
+           busta       0.00      0.00      0.00         7
+      cacciavite       0.14      0.14      0.14         7
+          calice       0.19      0.57      0.29         7
+         calzino       0.25      0.14      0.18         7
+         candela       0.00      0.00      0.00         7
+            cane       0.50      0.14      0.22         7
+          chiave       0.00      0.00      0.00         7
+        chitarra       0.67      0.57      0.62         7
+           cigno       0.17      0.29      0.21         7
+     coccodrillo       0.30      0.43      0.35         7
+         cornice       0.67      0.29      0.40         7
+          corona       0.00      0.00      0.00         7
+         cuscino       0.00      0.00      0.00         7
+          faccia       0.12      0.14      0.13         7
+      fiammifero       0.38      0.43      0.40         7
+          fiocco       0.07      0.14      0.09         7
+           fiume       0.67      0.57      0.62         7
+       forchetta       0.19      0.43      0.26         7
+         fulmine       1.00      0.29      0.44         7
+           gatto       0.25      0.29      0.27         7
+          gelato       0.25      0.14      0.18         7
+     grattacielo       1.00      0.29      0.44         7
+       lampadina       0.25      0.29      0.27         7
+       lavatrice       0.44      0.57      0.50         7
+           libro       0.40      0.29      0.33         7
+            luna       0.20      0.29      0.24         7
+        macchina       0.44      0.57      0.50         7
+            mare       1.00      0.86      0.92         7
+          matita       0.20      0.14      0.17         7
+        montagna       0.25      0.14      0.18         7
+          nuvola       0.00      0.00      0.00         7
+           omino       0.75      0.86      0.80         7
+        orecchio       0.25      0.14      0.18         7
+        orologio       0.25      0.14      0.18         7
+           pesce       0.00      0.00      0.00         7
+           piede       0.00      0.00      0.00         7
+     pipistrello       0.14      0.14      0.14         7
+ pupazzo.di.neve       0.12      0.14      0.13         7
+           ragno       0.75      0.86      0.80         7
+        rossetto       0.33      0.29      0.31         7
+           ruota       0.57      0.57      0.57         7
+       sassofono       0.12      0.14      0.13         7
+    scarabocchio       0.00      0.00      0.00         7
+          scarpa       0.33      0.29      0.31         7
+         secchio       0.00      0.00      0.00         7
+          sirena       0.57      0.57      0.57         7
+           smile       0.33      0.14      0.20         7
+            sole       0.67      0.57      0.62         7
+           spada       0.20      0.29      0.24         7
+          stella       0.00      0.00      0.00         7
+         t-shirt       0.00      0.00      0.00         7
+           tazza       0.21      0.43      0.29         7
+         teschio       0.33      0.29      0.31         7
+torcia.elettrica       0.43      0.43      0.43         7
+             uva       0.46      0.86      0.60         7
+
+       micro avg       0.29      0.29      0.29       427
+       macro avg       0.31      0.29      0.28       427
+    weighted avg       0.31      0.29      0.28       427

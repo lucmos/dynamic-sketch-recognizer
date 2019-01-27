@@ -27,7 +27,7 @@ from src.utility import utils
 # pd.options.display.max_rows = 10000#
 
 class Learner:
-    version = "1.2"
+    version = "1.3"
 
     TUNED_PARAMETERS = [{'kernel': ['rbf'],
                          'gamma': ['auto', 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8],
