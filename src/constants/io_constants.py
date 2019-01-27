@@ -24,6 +24,8 @@ BEST_PARAMS = "best_params"
 PARAMETERS = "parameters"
 
 CMC_FOLDER_NAME = "cmc"
+CONFUSION_MATRIX_FOLDER_NAME = "confusion_matrix"
+PRFS_FOLDER_NAME = "prfs_matrix"
 PLOT2D_FOLDER_NAME = "plot2D"
 GIF2D_FOLDER_NAME = "gif2D"
 GIF3D_FOLDER_NAME = "gif3D"

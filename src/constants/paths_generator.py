@@ -6,7 +6,7 @@ from .io_constants import RES_FOLDER, ANIMATION_FOLDER_NAME, GIF2D_FOLDER_NAME, 
     GIF_EXTENSION, \
     PNG_EXTENSION, GIF3D_FOLDER_NAME, PLOT2D_FOLDER_NAME, DATA_VISUALIZATION, CACHE_FOLDER_NAME, CACHE_FEATURES, \
     RESULTS_FOLDER_NAME, CMC_FOLDER_NAME, CACHE_LEARNER, CLASSIFICATION_REPORT, TXT_EXTENSION, PREDICTIONS_RANKING, \
-    BEST_PARAMS, PARAMETERS
+    BEST_PARAMS, PARAMETERS, CONFUSION_MATRIX_FOLDER_NAME, PRFS_FOLDER_NAME
 from .io_constants import ROOT_FOLDER
 from .io_constants import OUTPUT_FOLDER_NAME
 from .io_constants import PICS_FOLDER_NAME
@@ -122,6 +122,16 @@ class ResultsPaths:
     @staticmethod
     def cmc(dataset_name, fname):
         return ResultsPaths.result_file(ResultsPaths.results_folder(dataset_name), CMC_FOLDER_NAME, fname, PNG_EXTENSION)
+
+    @staticmethod
+    def confusion_matrix(dataset_name, fname):
+        return ResultsPaths.result_file(ResultsPaths.results_folder(dataset_name), CONFUSION_MATRIX_FOLDER_NAME, fname, PNG_EXTENSION)
+
+    @staticmethod
+    def prfs_matrix(dataset_name, fname):
+        return ResultsPaths.result_file(ResultsPaths.results_folder(dataset_name), PRFS_FOLDER_NAME, fname, PNG_EXTENSION)
+
+
 
     @staticmethod
     def classification_report(dataset_name, fname):

@@ -1,4 +1,39 @@
+import sklearn
+
 import numpy as np
+
+from .plotter import classification_plotter as perf
+
+
+def save_cmc_curve(filename, y_true, y_predicted_proba, classes, color='darkorange'):
+        ranks, cms_values = cmc_curve(y_true, y_predicted_proba, classes)
+        perf.plot_cmc(filename, ranks, cms_values, color=color)
+
+
+def save_prfs_matrix(filename, y_true, y_pred, classes):
+    precision, recall, fmeasure, support = sklearn.metrics.precision_recall_fscore_support(y_true, y_pred)
+    precision_avg, recall_avg, fmeasure_avg, _ = sklearn.metrics.precision_recall_fscore_support(y_true, y_pred,
+                                                                                                 average="weighted")
+    perf.plot_prfs_matrix(filename, classes, precision, recall, fmeasure, support, precision_avg, recall_avg,
+                          fmeasure_avg)
+
+
+def save_confusion_matrix(filename, y_true, y_pred, classes):
+    conf_matrix = confusion_matrix(y_true, y_pred, classes)
+    perf.plot_confusion_matrix(filename, classes, conf_matrix)
+
+
+# ~~~ # ~~~ # ~~~ # ~~~ # ~~~ # ~~~ # ~~~ # ~~~ # ~~~ # ~~~ # ~~~ # ~~~ # ~~~ # ~~~ # ~~~ # ~~~ # ~~~ # ~~~ # ~~~ #
+
+
+def precision_recall_fscore_support(y_true, y_pred, average=None):  # consider: average='weighted'
+    precision_avg, recall_avg, fmeasure_avg, support = sklearn.metrics.precision_recall_fscore_support(y_true, y_pred,
+                                                                                                       average=average)
+    return precision_avg, recall_avg, fmeasure_avg, support
+
+
+def confusion_matrix(y_true, y_pred, classes=None):
+    return sklearn.metrics.confusion_matrix(y_true, y_pred, labels=classes)
 
 
 def cmc_curve(y_true, y_predicted_proba, classes):

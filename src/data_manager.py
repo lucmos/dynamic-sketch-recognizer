@@ -9,7 +9,7 @@ from src.constants.io_constants import RES_FOLDER, JSON_EXTENSION
 
 from src.constants.paths_generator import DataVisPaths, Paths
 from src.constants.literals import *
-from src.plotter import tseries_visualization
+from src.visualization import tseries_visualization
 from src.utility.utils import natural_keys
 
 FILE_BLACK_LIST = [CONFIGURATION_FILE]
@@ -57,7 +57,6 @@ class DataManager:
                      Y]).astype(np.dtype(float))
 
         self._read_data()
-        self._generate_example_charts()
 
         assert (len(self.json_objs) == len(self.file_names) == len(self.file_paths) == len(self.users_ids)
                 == len(self.observation_ids) == len(self.items))
@@ -68,8 +67,7 @@ class DataManager:
         self.series_sampled_points = DataManager.normalize_positions(self.series_sampled_points)
 
     def _read_data(self):
-        assert os.path.isdir(Paths.dataset_folder(self.dataset_name)), \
-            "Insert the dataset \"" + self.dataset_name + "\" in: " + RES_FOLDER
+        assert os.path.isdir(Paths.dataset_folder(self.dataset_name)), "Insert the dataset \"" + self.dataset_name + "\" in: " + RES_FOLDER
 
         chrono = Chronom.Chrono("Reading json files...")
         observation_id = 0
@@ -159,7 +157,7 @@ class DataManager:
         """
         return dataframe.loc[dataframe[OBSERVATION_ID] == item_id]
 
-    def _generate_example_charts(self):
+    def generate_example_charts(self):
 
         examples_file_names = [
             ("pesce_Flavia_ischiboni_40.json", "21.01.2019.16.12"),
@@ -204,6 +202,8 @@ class DataManager:
 
 if __name__ == "__main__":
     d = DataManager(DATASET_NAME_0)
+    d.generate_example_charts()
+
     # a = get_wordidfrom_wordnumber_name_surname(d[WORDID_USERID], d[USERID_USERDATA], "Rita", "Battilocchi" , BLOCK_LETTER, 31)
     # print(get_infos(d[WORDID_USERID], d[USERID_USERDATA], a))
     # d._generate_example_charts()
@@ -220,7 +220,7 @@ if __name__ == "__main__":
     #                                                 X,
     #                                                 Y])
 
-    pd.options.display.max_rows = 10000
-    print(d.tseries_movement_points)
-    print("Number of items: {}".format(len(d.items)))
+    # pd.options.display.max_rows = 10000
+    # print(d.tseries_movement_points)
+    # print("Number of items: {}".format(len(d.items)))
 

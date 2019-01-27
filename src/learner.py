@@ -1,27 +1,22 @@
 import sklearn
-import warnings
-from collections import Counter
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
-from sklearn.pipeline import make_pipeline, Pipeline
+from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import RobustScaler
 from sklearn.svm import SVC
 from tsfresh.transformers import RelevantFeatureAugmenter
 
 from src.constants.paths_generator import CachePaths, ResultsPaths
-from src.plotter.performances import ClassificationPerformances
 
 # warnings.simplefilter(action='ignore', category=FutureWarning)
 import logging
 
-from src.evaluation.classification import cmc_curve
+from src.evaluation.classification import save_cmc_curve, save_confusion_matrix, save_prfs_matrix
 
 logging.basicConfig(level=logging.ERROR)
 
-import tsfresh
 import pandas as pd
-import numpy as np
 
 import src.data_manager as dm
 from src.constants.literals import *
@@ -38,12 +33,11 @@ class Learner:
                          'gamma': ['auto', 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8],
                          'C': [0.001, 1, 100, 1000, 2500, 4000, 4500, 5000, 5500,
                                6000, 7000, 7500, 8000]}]
-    TEST_SIZE = 0.4
+    TEST_SIZE = 0.35
 
     # FDR_LEVEL = 0.15
 
-    # If AUGMENTER changes, even the name of the optional parameter
-    # in set params must change
+    # If AUGMENTER changes, even the name of the optional parameter in pipeline.set_params must change
     AUGMENTER = "augmenter"
     SCALER = "scaler"
     CLASSIFIER = "classifier"
@@ -106,15 +100,7 @@ class Learner:
         print("ytrain train", self.y_train.shape)
         print("Tseries test", self.tseries_test.shape)
         print("xtest test", self.x_test.shape)
-
         print("y_test", len(self.y_test))
-        # print(self.x_train.shape)
-        # print(self.x_test.shape)
-        # print(self.tseries_train.shape)
-        # print(self.tseries_test.shape)
-        # print(self.y_train.shape)
-        # print(self.y_test.shape)
-        # print(self.tseries_test.head())
 
         c = Chrono("Building pipeline...")
         pipeline = self.build_pipeline()
@@ -146,8 +132,6 @@ class Learner:
         utils.save_json(Learner.TEST_SIZE, ResultsPaths.parameters(self.data.dataset_name, "test_size_{}".format(Learner.version)))
         utils.save_string(str(pipeline.named_steps), ResultsPaths.parameters(self.data.dataset_name, "pipeline_{}".format(Learner.version)))
 
-
-
     @staticmethod
     def tseries_train_test_split(tseries, items, observation_ids, test_size=TEST_SIZE):
         obs_train, obs_test, y_train, y_test = train_test_split(observation_ids,
@@ -169,7 +153,7 @@ class Learner:
 
     @staticmethod
     def scaler():
-        return RobustScaler()
+        return RobustScaler() #todo prova senza o con standard scaler
 
     @staticmethod
     def classifier():
@@ -204,10 +188,10 @@ class Learner:
     def evaluate(self):
         r = sklearn.metrics.classification_report(self.y_test, self.y_pred)
         utils.save_string(r, ResultsPaths.classification_report(self.data.dataset_name, Learner.version), override=True)
-        print(r)
 
-        ranks, cms_values = cmc_curve(self.y_test, self.y_proba, self.classes)
-        ClassificationPerformances.cmc(ResultsPaths.cmc(DATASET_NAME_0, Learner.version), ranks, cms_values)
+        save_cmc_curve(ResultsPaths.cmc(DATASET_NAME_0, Learner.version), self.y_test, self.y_proba, self.classes)
+        save_confusion_matrix(ResultsPaths.confusion_matrix(DATASET_NAME_0, Learner.version), self.y_test, self.y_pred, self.classes)
+        save_prfs_matrix(ResultsPaths.prfs_matrix(DATASET_NAME_0, Learner.version), self.y_test, self.y_pred, self.classes)
 
         out = {}
         for p, y in zip(self.y_proba, self.y_test):
