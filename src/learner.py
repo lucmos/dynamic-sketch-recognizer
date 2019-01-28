@@ -27,7 +27,7 @@ from src.utility import utils
 # pd.options.display.max_rows = 10000#
 
 class Learner:
-    version = "1.3"
+    version = "1.4"
 
     TUNED_PARAMETERS = [{'kernel': ['rbf'],
                          'gamma': ['auto', 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8],
@@ -189,9 +189,9 @@ class Learner:
         r = sklearn.metrics.classification_report(self.y_test, self.y_pred)
         utils.save_string(r, ResultsPaths.classification_report(self.data.dataset_name, Learner.version), override=True)
 
-        save_cmc_curve(ResultsPaths.cmc(DATASET_NAME_0, Learner.version), self.y_test, self.y_proba, self.classes)
-        save_confusion_matrix(ResultsPaths.confusion_matrix(DATASET_NAME_0, Learner.version), self.y_test, self.y_pred, self.classes)
-        save_prfs_matrix(ResultsPaths.prfs_matrix(DATASET_NAME_0, Learner.version), self.y_test, self.y_pred, self.classes)
+        save_cmc_curve(ResultsPaths.cmc(self.data.dataset_name, Learner.version), self.y_test, self.y_proba, self.classes)
+        save_confusion_matrix(ResultsPaths.confusion_matrix(self.data.dataset_name, Learner.version), self.y_test, self.y_pred, self.classes)
+        save_prfs_matrix(ResultsPaths.prfs_matrix(self.data.dataset_name, Learner.version), self.y_test, self.y_pred, self.classes)
 
         out = {}
         for p, y in zip(self.y_proba, self.y_test):
@@ -204,5 +204,5 @@ class Learner:
 
 if __name__ == '__main__':
     print("RESULTS TIME: {}".format(ResultsPaths.get_time()))
-    l = Learner.get_instance(DATASET_NAME_0, renew_cache=True)
+    l = Learner.get_instance(DATASET_NAME_1, renew_cache=True)
 

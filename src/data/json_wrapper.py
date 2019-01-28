@@ -53,6 +53,7 @@ def from_list(f: Callable[[Any], T], x: Any) -> List[T]:
 
 
 def from_str(x: Any) -> str:
+    x = str(x)
     assert isinstance(x, str)
     return x
 
