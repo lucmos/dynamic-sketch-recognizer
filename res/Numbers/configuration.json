@@ -1,0 +1,18 @@
+{
+  "guide_lines": true,
+  "items": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+  ],
+  "repetitions": 20,
+  "repetitions_label": "Ripetizioni",
+  "title": "Disegna il numero: "
+}
