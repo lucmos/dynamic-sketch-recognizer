@@ -1,0 +1,29 @@
+{'augmenter': RelevantFeatureAugmenter(chunksize=None, column_id=None, column_kind=None,
+             column_sort=None, column_value=None,
+             default_fc_parameters=None, disable_progressbar=None,
+             fdr_level=None, filter_only_tsfresh_features=True,
+             hypotheses_independent=None, kind_to_fc_parameters=None,
+             ml_task=None, n_jobs=None, profile=None,
+             profiling_filename=None, profiling_sorting=None,
+             show_warnings=None,
+             test_for_binary_target_binary_feature=None,
+             test_for_binary_target_real_feature=None,
+             test_for_real_target_binary_feature=None,
+             test_for_real_target_real_feature=None,
+             timeseries_container=       component  observation_id   time         x         y
+37           0.0             1.0    0.0  0.000000  0.698008
+38           0.0             1.0    8.0  0.000000  0.698008
+39           0.0             1.0   24.0  0.000000  0.698008
+40           0.0             1.0   42.0...7544  0.984996
+47523        0.0          1187.0  417.0  0.540214  0.988023
+
+[16305 rows x 5 columns]), 'scaler': RobustScaler(copy=True, quantile_range=(25.0, 75.0), with_centering=True,
+       with_scaling=True), 'classifier': GridSearchCV(cv=4, error_score='raise-deprecating',
+       estimator=SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
+  decision_function_shape='ovr', degree=3, gamma='auto_deprecated',
+  kernel='rbf', max_iter=-1, probability=True, random_state=None,
+  shrinking=True, tol=0.001, verbose=False),
+       fit_params=None, iid='warn', n_jobs=-1,
+       param_grid=[{'kernel': ['rbf'], 'gamma': ['auto', 0.01, 0.001, 0.0001, 1e-05, 1e-06, 1e-07, 1e-08], 'C': [0.001, 1, 100, 1000, 2500, 4000, 4500, 5000, 5500, 6000, 7000, 7500, 8000]}],
+       pre_dispatch='2*n_jobs', refit=True, return_train_score='warn',
+       scoring=None, verbose=0)}

@@ -61,6 +61,8 @@ class DataManager:
         assert (len(self.json_objs) == len(self.file_names) == len(self.file_paths) == len(self.users_ids)
                 == len(self.observation_ids) == len(self.items))
 
+        self.generate_example_charts(dataset_name)
+
         self.tseries_movement_points = DataManager.normalize_positions(self.tseries_movement_points)
         self.tseries_touch_down_points = DataManager.normalize_positions(self.tseries_touch_down_points)
         self.tseries_touch_up_points = DataManager.normalize_positions(self.tseries_touch_up_points)
@@ -173,9 +175,9 @@ class DataManager:
         """
         return dataframe.loc[dataframe[OBSERVATION_ID] == item_id]
 
-    def generate_example_charts(self):
+    def generate_example_charts(self, dataset_name):
 
-        examples_file_names = [
+        examples_file_names = {DATASET_NAME_0: [
             ("pesce_Flavia_ischiboni_40.json", "21.01.2019.16.12"),
             ("candela_flavia_ischiboni_10.json", "24.01.2019.10.52"),
             ("balena_Federica_Spini_64.json", "24.01.2019.14.44"),
@@ -183,18 +185,39 @@ class DataManager:
             ("busta_Federica_Spini_189.json", "25.01.2019.19.14"),
             ("busta_Matteo_Prata_6.json", "24.01.2019.15.20"),
             ("cacciavite_Federica_Spini_68.json", "24.01.2019.14.44")
-        ]
+        ],
+        DATASET_NAME_2:
+        [
+            ("0_Luca_Moschella_40.json", "28.01.2019.11.46"),
+            ("1_Federica_spini_41.json", "10.02.2019.11.14"),
+            ("1_Federica_Spini_61.json", "28.01.2019.12.17"),
+            ("2_Federica_Spini_72.json", "28.01.2019.12.29"),
+            ("3_Federica_Spini_3.json", "28.01.2019.10.40"),
+            ("4_Federica_Spini_194.json", "28.01.2019.12.29"),
+            ("5_Federica_Spini_15.json", "28.01.2019.12.29"),
+            ("5_Flavia_Ischiboni_35.json", "28.01.2019.15.38"),
+            ("6_Luca_Moschella_36.json", "28.01.2019.12.08"),
+            ("7_Luca_Moschella_27.json", "28.01.2019.11.44"),
+            ("8_Luca_Moschella_48.json", "28.01.2019.12.22"),
+            ("9_Federica_Spini_9.json", "28.01.2019.11.50")
+        ]}
+
+        fps_dataset = {
+            DATASET_NAME_0: 60,
+            DATASET_NAME_2: 20
+        }
+
+        assert dataset_name in examples_file_names
 
         def get_itemdata(reqeuest) -> jw.ItemData:
             return self.json_objs[reqeuest]
 
         dataframe = self.tseries_movement_points
-        for ex_name, ex_date in examples_file_names:
+        for ex_name, ex_date in examples_file_names[dataset_name]:
             item_id, = [i for i, x in enumerate(self.file_names) if x == ex_name and
                         get_itemdata(i).session_data.date == ex_date]
 
             item_data: jw.ItemData = self.json_objs[item_id]
-
             tseries = DataManager.get_item_tseries(dataframe, item_id)
 
             h = item_data.session_data.device_data.heigth_pixels
@@ -213,12 +236,13 @@ class DataManager:
             tseries_visualization.TimeSeries3DGIF(tseries, fname, height=h, width=w)
 
             fname = DataVisPaths.decomposition_gif3d(self.dataset_name, item_data.item, DataManager.get_userid(item_data))
-            tseries_visualization.TimeSeriesDecomposition3DGIF(tseries, fname, height=h, width=w)
+            tseries_visualization.TimeSeriesDecomposition3DGIF(tseries, fname, height=h, width=w, fps=fps_dataset[dataset_name])
 
 
 if __name__ == "__main__":
-    d = DataManager(DATASET_NAME_2)
-    # d.generate_example_charts()
+    dataset_name = DATASET_NAME_2
+
+    d = DataManager(dataset_name)
 
     # a = get_wordidfrom_wordnumber_name_surname(d[WORDID_USERID], d[USERID_USERDATA], "Rita", "Battilocchi" , BLOCK_LETTER, 31)
     # print(get_infos(d[WORDID_USERID], d[USERID_USERDATA], a))
