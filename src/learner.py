@@ -204,5 +204,5 @@ class Learner:
 
 if __name__ == '__main__':
     print("RESULTS TIME: {}".format(ResultsPaths.get_time()))
-    l = Learner.get_instance(DATASET_NAME_1, renew_cache=True)
+    l = Learner.get_instance(DATASET_NAME_0, renew_cache=True)
 

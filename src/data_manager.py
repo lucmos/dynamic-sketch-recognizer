@@ -66,6 +66,11 @@ class DataManager:
         self.tseries_touch_up_points = DataManager.normalize_positions(self.tseries_touch_up_points)
         self.series_sampled_points = DataManager.normalize_positions(self.series_sampled_points)
 
+        self.tseries_movement_points = DataManager.normalize_dimensions(self.tseries_movement_points)
+        self.tseries_touch_down_points = DataManager.normalize_dimensions(self.tseries_touch_down_points)
+        self.tseries_touch_up_points = DataManager.normalize_dimensions(self.tseries_touch_up_points)
+        self.series_sampled_points = DataManager.normalize_dimensions(self.series_sampled_points)
+
     def _read_data(self):
         assert os.path.isdir(Paths.dataset_folder(self.dataset_name)), "Insert the dataset \"" + self.dataset_name + "\" in: " + RES_FOLDER
 
@@ -127,14 +132,25 @@ class DataManager:
                 ignore_index=True, sort=True)
 
     @staticmethod
-    def _normalize_group(group):
+    def _normalize_positions_group(group):
         group[X] = group[X] - group[X].min()
         group[Y] = group[Y] - group[Y].min()
         return group
 
     @staticmethod
     def normalize_positions(tseries: pd.DataFrame):
-        return tseries.groupby(OBSERVATION_ID).apply(DataManager._normalize_group)
+        return tseries.groupby(OBSERVATION_ID).apply(DataManager._normalize_positions_group)
+
+    @staticmethod
+    def _normalize_dimensions_group(group):
+        group[X] = (group[X] - group[X].min()) / (group[X].max() - group[X].min())
+        group[Y] = (group[Y] - group[Y].min()) / (group[Y].max() - group[Y].min())
+        return group
+
+    @staticmethod
+    def normalize_dimensions(tseries: pd.DataFrame):
+        print("Normalizing....")
+        return tseries.groupby(OBSERVATION_ID).apply(DataManager._normalize_dimensions_group)
 
     @staticmethod
     def get_userid(item_data: jw.ItemData):
@@ -201,8 +217,8 @@ class DataManager:
 
 
 if __name__ == "__main__":
-    d = DataManager(DATASET_NAME_0)
-    d.generate_example_charts()
+    d = DataManager(DATASET_NAME_2)
+    # d.generate_example_charts()
 
     # a = get_wordidfrom_wordnumber_name_surname(d[WORDID_USERID], d[USERID_USERDATA], "Rita", "Battilocchi" , BLOCK_LETTER, 31)
     # print(get_infos(d[WORDID_USERID], d[USERID_USERDATA], a))

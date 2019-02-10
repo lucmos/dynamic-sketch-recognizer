@@ -1,0 +1,273 @@
+{
+  "date": "Mon Jan 28 12:24:36 GMT+01:00 2019",
+  "item": "1",
+  "item_index": 61,
+  "movement_points": [
+    {
+      "time": 0,
+      "component": 0,
+      "x": 991.0,
+      "y": 479.0
+    },
+    {
+      "time": 7,
+      "component": 0,
+      "x": 991.0,
+      "y": 479.0
+    },
+    {
+      "time": 33,
+      "component": 0,
+      "x": 990.77386,
+      "y": 480.583
+    },
+    {
+      "time": 56,
+      "component": 0,
+      "x": 989.0,
+      "y": 496.34995
+    },
+    {
+      "time": 59,
+      "component": 0,
+      "x": 989.0,
+      "y": 518.7359
+    },
+    {
+      "time": 74,
+      "component": 0,
+      "x": 989.0,
+      "y": 542.60876
+    },
+    {
+      "time": 91,
+      "component": 0,
+      "x": 991.2161,
+      "y": 570.8097
+    },
+    {
+      "time": 107,
+      "component": 0,
+      "x": 993.2222,
+      "y": 597.88916
+    },
+    {
+      "time": 124,
+      "component": 0,
+      "x": 995.2208,
+      "y": 622.6496
+    },
+    {
+      "time": 134,
+      "component": 0,
+      "x": 997.0,
+      "y": 631.0
+    }
+  ],
+  "sampled_points": [
+    {
+      "component": 0,
+      "x": 991.0,
+      "y": 479.0
+    },
+    {
+      "component": 0,
+      "x": 990.4355,
+      "y": 483.6197
+    },
+    {
+      "component": 0,
+      "x": 989.8401,
+      "y": 488.89117
+    },
+    {
+      "component": 0,
+      "x": 989.4187,
+      "y": 493.72488
+    },
+    {
+      "component": 0,
+      "x": 989.1539,
+      "y": 498.79364
+    },
+    {
+      "component": 0,
+      "x": 989.0273,
+      "y": 503.71918
+    },
+    {
+      "component": 0,
+      "x": 989.0,
+      "y": 508.8655
+    },
+    {
+      "component": 0,
+      "x": 989.0,
+      "y": 513.7585
+    },
+    {
+      "component": 0,
+      "x": 989.0,
+      "y": 518.72095
+    },
+    {
+      "component": 0,
+      "x": 989.0,
+      "y": 523.75287
+    },
+    {
+      "component": 0,
+      "x": 989.0,
+      "y": 528.8543
+    },
+    {
+      "component": 0,
+      "x": 989.0186,
+      "y": 533.80206
+    },
+    {
+      "component": 0,
+      "x": 989.1206,
+      "y": 538.78326
+    },
+    {
+      "component": 0,
+      "x": 989.3086,
+      "y": 543.8739
+    },
+    {
+      "component": 0,
+      "x": 989.56134,
+      "y": 548.7608
+    },
+    {
+      "component": 0,
+      "x": 989.88916,
+      "y": 553.7943
+    },
+    {
+      "component": 0,
+      "x": 990.2808,
+      "y": 558.91235
+    },
+    {
+      "component": 0,
+      "x": 990.67413,
+      "y": 563.9649
+    },
+    {
+      "component": 0,
+      "x": 991.06067,
+      "y": 568.981
+    },
+    {
+      "component": 0,
+      "x": 991.44037,
+      "y": 573.9606
+    },
+    {
+      "component": 0,
+      "x": 991.8132,
+      "y": 578.9037
+    },
+    {
+      "component": 0,
+      "x": 992.1792,
+      "y": 583.81024
+    },
+    {
+      "component": 0,
+      "x": 992.5623,
+      "y": 588.949
+    },
+    {
+      "component": 0,
+      "x": 992.94775,
+      "y": 594.0379
+    },
+    {
+      "component": 0,
+      "x": 993.33295,
+      "y": 599.0411
+    },
+    {
+      "component": 0,
+      "x": 993.71783,
+      "y": 603.95844
+    },
+    {
+      "component": 0,
+      "x": 994.1025,
+      "y": 608.7901
+    },
+    {
+      "component": 0,
+      "x": 994.5216,
+      "y": 613.8301
+    },
+    {
+      "component": 0,
+      "x": 994.998,
+      "y": 618.8089
+    },
+    {
+      "component": 0,
+      "x": 995.5859,
+      "y": 623.71796
+    },
+    {
+      "component": 0,
+      "x": 996.48157,
+      "y": 628.5668
+    }
+  ],
+  "session_data": {
+    "age": 24,
+    "configuration": {
+      "guide_lines": true,
+      "items": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "repetitions": 10,
+      "repetitions_label": "Ripetizioni",
+      "title": "Disegna il numero: "
+    },
+    "date": "28.01.2019.12.22",
+    "device_data": {
+      "device_finger_print": "HUAWEI/WAS-LX1A/HWWAS-H:8.0.0/HUAWEIWAS-LX1A/377(C432):user/release-keys",
+      "device_model": "WAS-LX1A",
+      "heigth_pixels": 1080,
+      "width_pixels": 1795,
+      "xdpi": 422.03,
+      "ydpi": 424.069
+    },
+    "gender": "MALE",
+    "name": "Luca",
+    "surname": "Moschella"
+  },
+  "touch_down_points": [
+    {
+      "time": 0,
+      "component": 0,
+      "x": 991.0,
+      "y": 479.0
+    }
+  ],
+  "touch_up_points": [
+    {
+      "time": 135,
+      "component": 0,
+      "x": 997.0,
+      "y": 631.0
+    }
+  ]
+}
