@@ -151,7 +151,6 @@ class DataManager:
 
     @staticmethod
     def normalize_dimensions(tseries: pd.DataFrame):
-        print("Normalizing....")
         return tseries.groupby(OBSERVATION_ID).apply(DataManager._normalize_dimensions_group)
 
     @staticmethod
@@ -184,7 +183,20 @@ class DataManager:
             ("barca_Federica_Spini_126.json", "25.01.2019.19.14"),
             ("busta_Federica_Spini_189.json", "25.01.2019.19.14"),
             ("busta_Matteo_Prata_6.json", "24.01.2019.15.20"),
-            ("cacciavite_Federica_Spini_68.json", "24.01.2019.14.44")
+            ("cacciavite_Federica_Spini_68.json", "24.01.2019.14.44"),
+            ("sole_Irene_Tallini_53.json", "23.01.2019.13.12"),
+            ("coccodrillo_giordano_ischiboni_15.json", "26.01.2019.17.36"),
+            ("teschio_giordano_ischiboni_58.json", "26.01.2019.17.36"),
+            ("uva_Federica_spini_121.json", "27.01.2019.23.30"),
+            ("lampadina_Federica_spini_272.json", "27.01.2019.23.30"),
+            ("nuvola_Luca_Moschella_36.json", "23.01.2019.09.57"),
+            ("gatto_Luca_Moschella_25.json", "23.01.2019.09.57"),
+            ("libro_Federica_spini_213.json", "27.01.2019.23.30"),
+            ("libro_Federica_spini_274.json", "27.01.2019.23.30"),
+            ("cigno_federica_spini_14.json", "22.01.2019.17.42"),
+            ("chitarra_Federica_Spini_74.json", "24.01.2019.14.44"),
+            ("pipistrello_Federica_Spini_225.json", "25.01.2019.19.14"),
+
         ],
         DATASET_NAME_2:
         [
@@ -240,9 +252,8 @@ class DataManager:
 
 
 if __name__ == "__main__":
-    dataset_name = DATASET_NAME_2
-
-    d = DataManager(dataset_name)
+    for x in [DATASET_NAME_0, DATASET_NAME_2]:
+        DataManager(x)
 
     # a = get_wordidfrom_wordnumber_name_surname(d[WORDID_USERID], d[USERID_USERDATA], "Rita", "Battilocchi" , BLOCK_LETTER, 31)
     # print(get_infos(d[WORDID_USERID], d[USERID_USERDATA], a))
