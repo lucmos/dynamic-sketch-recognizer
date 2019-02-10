@@ -219,7 +219,8 @@ class DataManager:
             DATASET_NAME_2: 20
         }
 
-        assert dataset_name in examples_file_names
+        if dataset_name not in examples_file_names:
+            return
 
         def get_itemdata(reqeuest) -> jw.ItemData:
             return self.json_objs[reqeuest]

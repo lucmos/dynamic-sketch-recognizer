@@ -48,13 +48,13 @@ def plot_confusion_matrix(filename, classes, confusion_matrix):
     data = pd.DataFrame(confusion_matrix, index=[i for i in range(len(classes))],
                         columns=[i for i in range(len(classes))])
 
-    f, ax = plt.subplots(figsize=(20, 20))
+    f, ax = plt.subplots()
     annot = data
     data = np.where(data != 0, np.log(data), 0)
     heatmap = sns.heatmap(data, xticklabels=classes, cbar=False, yticklabels=classes, cmap=CMAP,
                           square=True, annot=annot, fmt="g", linewidths=1, annot_kws={"size": 11})  # font size
     heatmap.yaxis.set_ticklabels(heatmap.yaxis.get_ticklabels(), rotation=0, ha='right', fontsize=12)
-    heatmap.xaxis.set_ticklabels(heatmap.xaxis.get_ticklabels(), rotation=45, ha='right', fontsize=12)
+    heatmap.xaxis.set_ticklabels(heatmap.xaxis.get_ticklabels(), rotation=45, ha='center', fontsize=12)
     plt.title("Confusion Matrix")
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
@@ -84,7 +84,7 @@ def plot_prfs_matrix(filename, classes, precision, recall, fmeasure, support, pr
     avg = pd.DataFrame({"Precision": precision_avg, "Recall": recall_avg, "F-measure": fmeasure_avg}, index=["AVERAGE"],
                        columns=["Precision", "Recall", "F-measure", "Support"])
 
-    f, ax = plt.subplots(figsize=(13, 20))
+    f, ax = plt.subplots()
 
     data["Support"] = data["Support"] / sum(data["Support"])
     data = data.append(avg)
