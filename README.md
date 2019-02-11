@@ -3,6 +3,7 @@
 This system is able to recognize items drawn on a touchscreen.
 
 The dataset has been gathered through the use of the [touch-recorder](https://github.com/LucaMoschella/touch-recorder) android application.
+The information recorded allows to reconstruct exactly how the drawing was done and to perform a dynamic analysis of the images.
 
 | ![pesce2d](/docs/pesce2d.gif)             | ![sole2d](/docs/sole2d.gif)             |
 | ----------------------------------------- | --------------------------------------- |
