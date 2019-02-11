@@ -9,10 +9,13 @@ The dataset has been gathered through the use of the [touch-recorder](https://gi
 | ![pesce3d](/docs/pesce3d.gif)             | ![sole3d](/docs/sole3d.gif)             |
 | ![pesce3ddecomp](/docs/pesce3ddecomp.gif) | ![sole3ddecomp](/docs/sole3ddecomp.gif) |
 
-We have gathered a dataset on 61 pseudorandom objects and a MINST-like dataset.
+We have gathered a dataset on 61 pseudo-random objects and a MINST-like dataset of numbers.
 
 The performance of the system on the MINST-like dataset are very encouraging:
 
 ![prfs_matrix](/docs/prfs.png)
+___
 ![confusion_matrix](/docs/confusion.png)
+___
 ![cmc_curve](/docs/cmc.png)
+___
