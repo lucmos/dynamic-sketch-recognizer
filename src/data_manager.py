@@ -211,7 +211,11 @@ class DataManager:
             ("6_Luca_Moschella_36.json", "28.01.2019.12.08"),
             ("7_Luca_Moschella_27.json", "28.01.2019.11.44"),
             ("8_Luca_Moschella_48.json", "28.01.2019.12.22"),
-            ("9_Federica_Spini_9.json", "28.01.2019.11.50")
+            ("9_Federica_Spini_9.json", "28.01.2019.11.50"),
+            ("4_Federica_spini_34.json", "10.02.2019.11.14"),
+            ("4_Federica_Spini_34.json", "28.01.2019.12.17"),
+            ("4_Federica_Spini_84.json", "28.01.2019.12.17"),
+            ("4_Luca_Moschella_84.json", "28.01.2019.12.22")
         ]}
 
         fps_dataset = {
@@ -253,7 +257,7 @@ class DataManager:
 
 
 if __name__ == "__main__":
-    for x in [DATASET_NAME_0, DATASET_NAME_2]:
+    for x in [DATASET_NAME_2]:
         DataManager(x)
 
     # a = get_wordidfrom_wordnumber_name_surname(d[WORDID_USERID], d[USERID_USERDATA], "Rita", "Battilocchi" , BLOCK_LETTER, 31)
