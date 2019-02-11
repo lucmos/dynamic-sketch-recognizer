@@ -215,7 +215,8 @@ class DataManager:
             ("4_Federica_spini_34.json", "10.02.2019.11.14"),
             ("4_Federica_Spini_34.json", "28.01.2019.12.17"),
             ("4_Federica_Spini_84.json", "28.01.2019.12.17"),
-            ("4_Luca_Moschella_84.json", "28.01.2019.12.22")
+            ("4_Luca_Moschella_84.json", "28.01.2019.12.22"),
+            ("4_Federica_spini_4.json", "10.02.2019.11.14")
         ]}
 
         fps_dataset = {
